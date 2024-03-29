@@ -27,6 +27,7 @@ body {
 
 #header-wrap {
     position: fixed;
+    z-index: 999;
     width: 100%;
     top: 0px;
     left: 0px;
@@ -39,8 +40,8 @@ body {
     justify-content: space-between;
 
     background-color: white;
-    padding-left: 2rem;
-    padding-right: 2rem;
+    padding-left: 10rem;
+    padding-right: 10rem;
 }
 
 #left-header {

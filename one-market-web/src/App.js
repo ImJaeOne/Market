@@ -1,8 +1,11 @@
+import 'antd/dist/antd.css';
 import './App.css';
 import { Switch, Route, Link, useHistory } from 'react-router-dom';
 import MainPageComponent from './main';
 import ProductsPageComponent from './products';
 import ProductPageComponent from './product';
+import UploadPageComponent from './upload';
+
 import { message } from 'antd';
 
 function App() {
@@ -38,13 +41,13 @@ function App() {
                     </div>
                     <div id="right-header">
                         <input type="text" id="search" placeholder="물품이나 동네를 검색해보세요." />
-                        <Link to="/login" className="to-link">
+                        <div className="to-login" onClick={() => history.push('/login')}>
                             로그인
-                        </Link>
+                        </div>
                     </div>
                 </div>
             </header>
-            <div id="body">
+            <section id="body">
                 <Switch>
                     <Route exact={true} path="/">
                         <MainPageComponent />
@@ -55,8 +58,11 @@ function App() {
                     <Route exact={true} path="/product">
                         <ProductPageComponent />
                     </Route>
+                    <Route exact={true} path="/upload">
+                        <UploadPageComponent />
+                    </Route>
                 </Switch>
-            </div>
+            </section>
             <footer id="footer">
                 <div id="info">
                     <div>

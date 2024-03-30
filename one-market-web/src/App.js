@@ -1,10 +1,13 @@
 import './App.css';
-import { Switch, Route, Link } from 'react-router-dom';
+import { Switch, Route, Link, useHistory } from 'react-router-dom';
 import MainPageComponent from './main';
 import ProductsPageComponent from './products';
+import ProductPageComponent from './product';
 import { message } from 'antd';
 
 function App() {
+    const history = useHistory();
+
     const prepare = () => {
         message.info('준비 중인 서비스입니다.');
     };
@@ -35,7 +38,9 @@ function App() {
                     </div>
                     <div id="right-header">
                         <input type="text" id="search" placeholder="물품이나 동네를 검색해보세요." />
-                        <div className="to-link">로그인</div>
+                        <Link to="/login" className="to-link">
+                            로그인
+                        </Link>
                     </div>
                 </div>
             </header>
@@ -46,6 +51,9 @@ function App() {
                     </Route>
                     <Route exact={true} path="/products">
                         <ProductsPageComponent />
+                    </Route>
+                    <Route exact={true} path="/product">
+                        <ProductPageComponent />
                     </Route>
                 </Switch>
             </div>

@@ -1,5 +1,13 @@
 #upload-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#upload-headline {
     margin-top: 30px;
+    font-size: 32px;
+    font-weight: bolder;
+    margin-bottom: 30px;
 }
 .upload-label {
     font-size: 18px;
@@ -34,6 +42,7 @@
 
 #product-description {
     height: 150px;
+    width: 500px;
 }
 
 #upload-submit-btn {

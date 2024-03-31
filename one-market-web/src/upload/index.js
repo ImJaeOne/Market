@@ -38,6 +38,7 @@ function UploadPageComponent() {
     };
     return (
         <div id="upload-wrap">
+            <div id="upload-headline">상품 업로드</div>
             <Form name="upload" onFinish={onSubmit}>
                 <Form.Item name="upload" label={<div className="upload-label">상품 사진</div>}>
                     <Upload
@@ -85,14 +86,14 @@ function UploadPageComponent() {
                 <Form.Item
                     name="description"
                     label={<div className="upload-label">상품 소개</div>}
-                    rules={[{ required: true, message: '상품 소개 입력해주세요.' }]}
+                    rules={[{ required: true, message: '상품 소개를 입력해주세요.' }]}
                 >
                     <Input.TextArea
                         size="large"
                         id="product-description"
                         showCount
                         maxLength={300}
-                        placeholder="상품 소개 입력해주세요."
+                        placeholder="상품 소개를 입력해주세요."
                     />
                 </Form.Item>
                 <Form.Item>

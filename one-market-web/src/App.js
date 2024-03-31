@@ -7,7 +7,8 @@ import ProductPageComponent from './product';
 import UploadPageComponent from './upload';
 import LoginPageComponent from './login';
 import SignupPageComponent from './signup';
-import { message } from 'antd';
+import { message, Input } from 'antd';
+import { AudioOutlined } from '@ant-design/icons';
 
 function App() {
     const history = useHistory();
@@ -15,6 +16,9 @@ function App() {
     const prepare = () => {
         message.info('준비 중인 서비스입니다.');
     };
+
+    const { Search } = Input;
+    const onSearch = (value, _e, info) => console.log(info?.source, value);
 
     return (
         <div>
@@ -41,7 +45,7 @@ function App() {
                         </div>
                     </div>
                     <div id="right-header">
-                        <input type="text" id="search" placeholder="물품이나 동네를 검색해보세요" />
+                        <Search id="search" placeholder="물품이나 동네를 검색해보세요" onSearch={onSearch} />
                         <div className="to-login" onClick={() => history.push('/login')}>
                             로그인
                         </div>

@@ -79,13 +79,11 @@ body {
     min-width: 52px;
     font-size: 17px;
     cursor: pointer;
+    margin-left: 48px;
 }
 
 #search {
-    margin-right: 3rem;
-    width: 200px;
-    height: 40px;
-    border: 1px solid #868b94;
+    width: 250px;
 }
 
 #footer {

@@ -5,7 +5,7 @@ import MainPageComponent from './main';
 import ProductsPageComponent from './products';
 import ProductPageComponent from './product';
 import UploadPageComponent from './upload';
-
+import LoginPageComponent from './login';
 import { message } from 'antd';
 
 function App() {
@@ -60,6 +60,9 @@ function App() {
                     </Route>
                     <Route exact={true} path="/upload">
                         <UploadPageComponent />
+                    </Route>
+                    <Route exact={true} path="/login">
+                        <LoginPageComponent />
                     </Route>
                 </Switch>
             </section>

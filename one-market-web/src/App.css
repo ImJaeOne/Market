@@ -58,7 +58,7 @@ body {
 
 #logo {
     padding-right: 3rem;
-    min-width: 200px;
+    min-width: 230px;
     display: flex;
     font-size: 30px;
     height: 50px;
@@ -76,13 +76,16 @@ body {
 }
 
 .to-login {
-    min-width: 50px;
+    min-width: 52px;
+    font-size: 17px;
+    cursor: pointer;
 }
 
 #search {
     margin-right: 3rem;
-    width: 190px;
+    width: 200px;
     height: 40px;
+    border: 1px solid #868b94;
 }
 
 #footer {

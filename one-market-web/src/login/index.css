@@ -1,0 +1,80 @@
+#login-wrap {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#login-headline {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+#id-img-icon {
+    position: relative;
+    left: 40px;
+    width: 25px;
+    height: 25px;
+    z-index: 998;
+}
+
+#pw-img-icon {
+    position: relative;
+    left: 40px;
+    top: 12px;
+    width: 25px;
+    height: 25px;
+    z-index: 998;
+}
+
+#login-id {
+    width: 400px;
+    height: 48px;
+    padding-left: 50px;
+    margin-bottom: 10px;
+}
+
+#login-pw {
+    width: 357px;
+    height: 48px;
+    padding-left: 50px;
+}
+
+.ant-form-item {
+    margin-bottom: 0;
+}
+
+.ant-input-affix-wrapper {
+    padding: 0px;
+    width: 400px;
+    height: 51px;
+    margin-bottom: 10px;
+}
+
+.ant-form-item-explain-error {
+    position: relative;
+    left: 75px;
+    margin-bottom: 10px;
+}
+
+.ant-input-suffix {
+    position: relative;
+}
+
+#login-submit-btn {
+    position: relative;
+    left: 25px;
+    background-color: rgb(30, 120, 255);
+    color: white;
+    border: none;
+    margin: 30px 0px;
+    width: 400px;
+}
+
+#to-signup {
+    float: right;
+    margin-bottom: 10px;
+}

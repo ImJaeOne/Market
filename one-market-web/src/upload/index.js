@@ -8,7 +8,7 @@ function UploadPageComponent() {
     const [imageUrl, setImageUrl] = useState(null);
     const history = useHistory();
     const onSubmit = (values) => {
-        console.log(values.name);
+        console.log(values);
         axios
             .post('https://13772fc3-b8e4-44a1-b7e9-69cd5fcfc611.mock.pstmn.io/product-value', {
                 name: values.name,
@@ -96,7 +96,7 @@ function UploadPageComponent() {
                     />
                 </Form.Item>
                 <Form.Item>
-                    <Button id="submit-btn" size="large" htmlType="submit">
+                    <Button id="upload-submit-btn" size="large" htmlType="submit">
                         상품 등록
                     </Button>
                 </Form.Item>

@@ -1,6 +1,5 @@
 import './index.css';
-import { Link } from 'react-router-dom';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, Divider } from 'antd';
 
 function LoginPageComponent() {
     const onSubmit = (values) => {
@@ -22,14 +21,13 @@ function LoginPageComponent() {
                         <Input.Password id="login-pw" placeholder="비밀번호" />
                     </div>
                 </Form.Item>
-                <Link to="/signup" id="to-signup">
-                    회원 가입
-                </Link>
                 <Form.Item>
                     <Button id="login-submit-btn" size="large" htmlType="submit">
                         로그인
                     </Button>
                 </Form.Item>
+                <Divider />
+                <Button id="to-signup-btn">회원 가입</Button>
             </Form>
         </div>
     );

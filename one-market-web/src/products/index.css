@@ -61,10 +61,12 @@
 }
 
 .product-name {
+    padding-left: 15px;
     font-size: 18px;
 }
 
 .product-price {
+    padding-left: 20px;
     font-size: 16px;
     font-weight: 600;
     margin-top: 8px;
@@ -95,4 +97,5 @@
 .product-date {
     font-size: 12px;
     color: rgb(136, 136, 136);
+    padding-right: 10px;
 }

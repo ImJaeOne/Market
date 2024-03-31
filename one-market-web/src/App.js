@@ -6,6 +6,7 @@ import ProductsPageComponent from './products';
 import ProductPageComponent from './product';
 import UploadPageComponent from './upload';
 import LoginPageComponent from './login';
+import SignupPageComponent from './signup';
 import { message } from 'antd';
 
 function App() {
@@ -40,7 +41,7 @@ function App() {
                         </div>
                     </div>
                     <div id="right-header">
-                        <input type="text" id="search" placeholder="물품이나 동네를 검색해보세요." />
+                        <input type="text" id="search" placeholder="물품이나 동네를 검색해보세요" />
                         <div className="to-login" onClick={() => history.push('/login')}>
                             로그인
                         </div>
@@ -63,6 +64,9 @@ function App() {
                     </Route>
                     <Route exact={true} path="/login">
                         <LoginPageComponent />
+                    </Route>
+                    <Route exact={true} path="/signup">
+                        <SignupPageComponent />
                     </Route>
                 </Switch>
             </section>

@@ -8,7 +8,6 @@ import UploadPageComponent from './upload';
 import LoginPageComponent from './login';
 import SignupPageComponent from './signup';
 import { message, Input } from 'antd';
-import { AudioOutlined } from '@ant-design/icons';
 
 function App() {
     const history = useHistory();

@@ -1,26 +1,21 @@
 #products {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    flex-wrap: wrap;
 }
 
 #product-headline {
     margin-top: 30px;
-    margin-bottom: 15px;
+    margin-bottom: 30px;
     font-size: 32px;
     text-align: center;
 }
 
-#product-upload-wrap {
-    display: flex;
-    flex-direction: row-reverse;
-}
-
 #product-upload {
-    margin-bottom: 40px;
+    margin-left: auto;
 }
 
-#product-list {
+#product-wrap {
     display: flex;
     flex-wrap: wrap;
     margin-top: 12px;

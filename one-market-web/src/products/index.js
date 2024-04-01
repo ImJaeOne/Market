@@ -1,18 +1,22 @@
 import './index.css';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Button } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 
 function ProductsPageComponent() {
+    const history = useHistory();
     return (
-        <div>
+        <div id="products">
             <h1 id="product-headline">중고거래</h1>
-            <Link to="upload" id="product-upload-wrap">
-                <Button id="product-upload" size="large" icon={<DownloadOutlined />}>
-                    상품 업로드
-                </Button>
-            </Link>
-            <section id="products">
+            <Button
+                id="product-upload"
+                size="large"
+                onClick={() => history.push('/upload')}
+                icon={<DownloadOutlined />}
+            >
+                상품 업로드
+            </Button>
+            <div id="product-wrap">
                 <Link to="/product" className="product-card">
                     <div>
                         <img className="product-img" src="images/notebook1.jpg" alt="product-img" />
@@ -173,7 +177,7 @@ function ProductsPageComponent() {
                         </div>
                     </div>
                 </Link>
-            </section>
+            </div>
         </div>
     );
 }

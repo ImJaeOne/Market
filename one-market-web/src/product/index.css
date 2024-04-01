@@ -31,7 +31,8 @@
 }
 
 #contents-box {
-    padding: 16px;
+    padding: 16px 16px 50px 16px;
+    border-bottom: 1px solid black;
 }
 
 #name {
@@ -57,4 +58,70 @@
 #purchase-button {
     margin-top: 8px;
     margin-bottom: 16px;
+}
+
+#question {
+    padding: 16px;
+}
+
+#question-header > span {
+    color: gray;
+}
+
+.comment-list {
+    display: flex;
+    align-items: center;
+}
+
+.comment-profile-box {
+    padding: 16px;
+    margin-top: 8px;
+
+    display: flex;
+    align-items: center;
+}
+
+.comment-profile-box > img {
+    width: 50px;
+    height: 50px;
+}
+
+.comment {
+    padding: 16px;
+}
+
+.owner-reply-toggle {
+    margin-top: 50px;
+    margin-left: auto;
+}
+
+.owner-reply-arrow {
+    width: 30px;
+    height: auto;
+}
+
+.owner-reply {
+    margin-left: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.owner-reply-btn {
+    margin-top: 10px;
+    margin-left: auto;
+}
+
+.customer-reply {
+    display: flex;
+    align-items: center;
+}
+
+.customer-reply-btn {
+    margin-top: 10px;
+    margin-left: auto;
+}
+
+.reply-area {
+    display: flex;
+    flex-direction: column;
 }

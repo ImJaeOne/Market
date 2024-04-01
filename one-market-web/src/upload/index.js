@@ -1,7 +1,7 @@
 import './index.css';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Form, Upload, Divider, Input, InputNumber, Button, message } from 'antd';
+import { Form, Upload, Divider, Input, InputNumber, Button, message, Select } from 'antd';
 import axios from 'axios';
 
 function UploadPageComponent() {
@@ -12,6 +12,7 @@ function UploadPageComponent() {
         axios
             .post('https://13772fc3-b8e4-44a1-b7e9-69cd5fcfc611.mock.pstmn.io/product-value', {
                 name: values.name,
+                category: values.category,
                 description: values.description,
                 seller: values.seller,
                 price: parseInt(values.price),
@@ -36,6 +37,51 @@ function UploadPageComponent() {
             setImageUrl(imageUrl);
         }
     };
+    const handleChange = (value) => {
+        console.log(`selected ${value}`);
+    };
+    const option = [
+        {
+            value: 'all',
+            label: '전체',
+        },
+        {
+            value: 'cloth',
+            label: '의류',
+        },
+        {
+            value: 'beuty',
+            label: '뷰티',
+        },
+        {
+            value: 'food',
+            label: '식품',
+        },
+        {
+            value: 'kitchen',
+            label: '주방용품',
+        },
+        {
+            value: 'daily',
+            label: '생활용품',
+        },
+        {
+            value: 'sport',
+            label: '스포츠',
+        },
+        {
+            value: 'electronics',
+            label: '가전/디지털',
+        },
+        {
+            value: 'furniture',
+            label: '가구',
+        },
+        {
+            value: 'health',
+            label: '헬스',
+        },
+    ];
     return (
         <div id="upload-wrap">
             <div id="upload-headline">상품 업로드</div>
@@ -65,6 +111,21 @@ function UploadPageComponent() {
                     rules={[{ required: true, message: '판매자명을 입력해주세요.' }]}
                 >
                     <Input className="upload-name" size="large" placeholder="판매자명을 입력해주세요." />
+                </Form.Item>
+                <Divider />
+                <Form.Item
+                    name="category"
+                    label={<div className="upload-label">카테고리</div>}
+                    rules={[{ required: true, message: '카테고리를 선택해주세요.' }]}
+                >
+                    <Select
+                        defaultValue="전체"
+                        style={{
+                            width: 120,
+                        }}
+                        onChange={handleChange}
+                        options={option}
+                    />
                 </Form.Item>
                 <Divider />
                 <Form.Item

@@ -11,6 +11,11 @@
     text-align: center;
 }
 
+#products-nav {
+    display: flex;
+    justify-content: space-around;
+}
+
 #product-upload {
     margin-left: auto;
 }

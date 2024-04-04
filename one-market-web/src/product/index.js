@@ -7,7 +7,7 @@ function ProductPageComponent() {
     const [showTextarea, setShowTextarea] = useState(false);
     const [text, setText] = useState('');
     const [reply, setReply] = useState(false);
-    const [owner, setOwner] = useState(false);
+    // const [owner, setOwner] = useState(false);
 
     const handleButtonClick = () => {
         setShowTextarea(!showTextarea);
@@ -93,7 +93,7 @@ function ProductPageComponent() {
                                 <img className="owner-reply-arrow" src="/images/reply.png" alt="reply-arrow"></img>
                                 <div className="comment-profile-box">
                                     <img src="/images/avatar.png" alt="avatar" />
-                                    <span>강종협</span>
+                                    <span>임재원</span>
                                 </div>
                                 <div className="comment">{text}</div>
                             </div>

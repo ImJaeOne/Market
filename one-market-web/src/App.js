@@ -8,16 +8,20 @@ import UploadPageComponent from './upload';
 import LoginPageComponent from './login';
 import SignupPageComponent from './signup';
 import { message, Input } from 'antd';
+import axios from 'axios';
 
 function App() {
     const history = useHistory();
-
     const prepare = () => {
         message.info('준비 중인 서비스입니다.');
     };
 
     const { Search } = Input;
     const onSearch = (value, _e, info) => console.log(info?.source, value);
+
+    axios
+        .get('http://localhost:3006/api/getSession')
+        .then((result) => console.log('getSession in client: ', result.data));
 
     return (
         <div>

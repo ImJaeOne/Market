@@ -27,3 +27,15 @@ exports.signUp = (data) => {
         );
     });
 };
+
+exports.updateSession = (userID) => {
+    return new Promise((resolve, reject) => {
+        db.query(`UPDATE user SET userSession = 1 WHERE userID = ?`, userID, (error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+};

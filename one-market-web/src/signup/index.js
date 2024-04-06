@@ -8,11 +8,20 @@ function SignupPageComponent() {
     const onSubmit = async (values) => {
         console.log(values);
         axios
-            .post('http://localhost:3006/api/signup', {
-                userEmail: values.userEmail,
-                userPW: values.userPW,
-                userName: values.userName,
-            })
+            .post(
+                'http://localhost:3006/api/signup',
+                {
+                    userEmail: values.userEmail,
+                    userPW: values.userPW,
+                    userName: values.userName,
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    withCredentials: true,
+                }
+            )
             .then((result) => {
                 console.log(result);
                 message.info(`회원가입 완료`);
@@ -34,7 +43,7 @@ function SignupPageComponent() {
                             className="id-img-icon"
                             alt="id-icon"
                         />
-                        <Input className="signup-placeholder" size="large" placeholder="아이디" />
+                        <Input className="signup-placeholder" size="large" placeholder="아이디를 입력해주세요." />
                     </div>
                 </Form.Item>
                 <Form.Item name="userPW" rules={[{ required: true, message: '비밀번호를 입력해주세요.' }]}>

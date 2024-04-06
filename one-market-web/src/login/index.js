@@ -1,31 +1,39 @@
 import './index.css';
+import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Form, Input, Button, Divider, message } from 'antd';
 import axios from 'axios';
 
 function LoginPageComponent() {
     const history = useHistory();
-    const onSubmit = (values) => {
-        console.log(values);
-        axios
-            .post('http://localhost:3006/api/loginCheck', {
+    const [form] = Form.useForm(); // Form의 상태를 관리하기 위해 Form.useForm()을 사용합니다.
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const loginSubmit = async (values) => {
+        if (isSubmitting) return;
+        setIsSubmitting(true);
+
+        try {
+            const result = await axios.post('http://localhost:3006/api/loginCheck', {
                 userEmail: values.userEmail,
                 userPW: values.userPW,
-            })
-            .then((result) => {
-                console.log('로그인 :', result);
-                message.info(`로그인 성공`);
-                history.push(`/`);
-            })
-            .catch((error) => {
-                message.error(`로그인 실패`);
-                console.error(error);
             });
+
+            console.log('로그인:', result);
+            message.info('로그인 성공');
+            console.log('세션 정보: ', result.data.session.userID);
+            history.push('/');
+        } catch (error) {
+            message.error('로그인 실패');
+            console.error('로그인 실패:', error);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
     return (
         <div id="login-wrap">
             <div id="login-headline">로그인</div>
-            <Form name="login" onFinish={onSubmit}>
+            <Form form={form} name="login" onFinish={loginSubmit}>
                 <Form.Item name="userEmail" rules={[{ required: true, message: '아이디를 입력해주세요.' }]}>
                     <div className="textinput">
                         <img

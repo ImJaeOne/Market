@@ -1,5 +1,6 @@
 import 'antd/dist/antd.css';
 import './App.css';
+import { useState } from 'react';
 import { Switch, Route, Link, useHistory } from 'react-router-dom';
 import MainPageComponent from './main';
 import ProductsPageComponent from './products';
@@ -12,16 +13,34 @@ import axios from 'axios';
 
 function App() {
     const history = useHistory();
+    const [session, setSession] = useState(localStorage.getItem('session'));
+
+    const handleSession = (sessionData) => {
+        console.log('로그아웃 하기전 세션 데이터', sessionData);
+        setSession(sessionData);
+        localStorage.setItem('session', sessionData);
+    };
+
+    const logout = () => {
+        axios
+            .post('http://localhost:3006/api/logout', null, {
+                withCredentials: true,
+            })
+            .then((res) => {
+                console.log('로그아웃 성공');
+                setSession(null);
+                localStorage.removeItem('session');
+            })
+            .catch((error) => {
+                console.error('로그아웃 에러 : ', error);
+            });
+    };
     const prepare = () => {
         message.info('준비 중인 서비스입니다.');
     };
 
     const { Search } = Input;
     const onSearch = (value, _e, info) => console.log(info?.source, value);
-
-    axios
-        .get('http://localhost:3006/api/getSession')
-        .then((result) => console.log('getSession in client: ', result.data));
 
     return (
         <div>
@@ -49,8 +68,24 @@ function App() {
                     </div>
                     <div id="right-header">
                         <Search id="search" placeholder="물품이나 동네를 검색해보세요" onSearch={onSearch} />
-                        <div className="to-login" onClick={() => history.push('/login')}>
-                            로그인
+                        <div>
+                            {session !== null ? (
+                                <div className="to-logout">
+                                    <div className="to-login">{session.userName}님</div>
+                                    <div
+                                        className="to-login"
+                                        onClick={() => {
+                                            logout();
+                                        }}
+                                    >
+                                        로그아웃
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="to-login" onClick={() => history.push('/login')}>
+                                    로그인
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -61,16 +96,16 @@ function App() {
                         <MainPageComponent />
                     </Route>
                     <Route exact={true} path="/products">
-                        <ProductsPageComponent />
+                        <ProductsPageComponent session={session} />
                     </Route>
                     <Route exact={true} path="/product">
                         <ProductPageComponent />
                     </Route>
                     <Route exact={true} path="/upload">
-                        <UploadPageComponent />
+                        <UploadPageComponent session={session} />
                     </Route>
                     <Route exact={true} path="/login">
-                        <LoginPageComponent />
+                        <LoginPageComponent onSession={handleSession} />
                     </Route>
                     <Route exact={true} path="/signup">
                         <SignupPageComponent />

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const userRoutes = require('./userRoutes');
 const session = require('express-session');
+const path = require('path');
 const FileStore = require('session-file-store')(session);
 const morgan = require('morgan');
 
@@ -12,12 +13,19 @@ app.use(morgan('dev'));
 
 app.get('/favicon.ico', (req, res) => res.status(204));
 
+app.use((req, res, next) => {
+    res.header('Cache-Control', 'no-cache, no-store');
+    res.header('Pragma', 'no-cache');
+    res.header('Expires', '0');
+    next();
+});
+
 app.use(
     session({
         secret: 'av*Sve#sd%%fdsa',
         resave: false,
         saveUninitialized: false,
-        store: new FileStore({ path: './sessions' }),
+        store: new FileStore(),
     })
 );
 app.use(

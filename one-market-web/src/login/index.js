@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { Form, Input, Button, Divider, message } from 'antd';
 import axios from 'axios';
 
-function LoginPageComponent() {
+function LoginPageComponent({ onSession }) {
     const history = useHistory();
     const [form] = Form.useForm(); // Form의 상태를 관리하기 위해 Form.useForm()을 사용합니다.
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -14,14 +14,24 @@ function LoginPageComponent() {
         setIsSubmitting(true);
 
         try {
-            const result = await axios.post('http://localhost:3006/api/loginCheck', {
-                userEmail: values.userEmail,
-                userPW: values.userPW,
-            });
+            const result = await axios.post(
+                'http://localhost:3006/api/loginCheck',
+                {
+                    userEmail: values.userEmail,
+                    userPW: values.userPW,
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    withCredentials: true,
+                }
+            );
 
             console.log('로그인:', result);
             message.info('로그인 성공');
-            console.log('세션 정보: ', result.data.session.userID);
+            console.log('세션 정보: ', result.data.session);
+            onSession(result.data.session);
             history.push('/');
         } catch (error) {
             message.error('로그인 실패');

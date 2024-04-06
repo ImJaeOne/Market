@@ -4,8 +4,22 @@ import { useHistory } from 'react-router-dom';
 import { Form, Upload, Divider, Input, InputNumber, Button, message, Select } from 'antd';
 import axios from 'axios';
 
-function UploadPageComponent() {
+function UploadPageComponent(props) {
+    const { session } = props;
     const [imageUrl, setImageUrl] = useState(null);
+    const [isLogined, setIsLogined] = useState(false);
+    console.log(isLogined);
+    axios
+        .post('http://localhost:3006/api/access', { session: `${session}` }, { withCredentials: true })
+        .then((result) => {
+            console.log('접근 가능');
+            setIsLogined(true);
+        })
+        .catch((error) => {
+            console.error('접근 불가능 : ', error);
+            message.error('로그인이 필요한 서비스입니다.');
+            history.push('/login');
+        });
     const history = useHistory();
     const onSubmit = (values) => {
         console.log(values);

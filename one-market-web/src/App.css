@@ -76,10 +76,15 @@ body {
 }
 
 .to-login {
-    min-width: 52px;
+    min-width: 68px;
     font-size: 17px;
     cursor: pointer;
     margin-left: 48px;
+}
+
+.to-logout {
+    display: flex;
+    font-size: 17px;
 }
 
 #search {

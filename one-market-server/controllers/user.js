@@ -44,7 +44,7 @@ const hashCompare = async (inputValue, hash) => {
     }
 };
 
-//로그인 정보 일치
+//로그인 정보 일치 + 로그인 성공 시 session 전달
 exports.loginCheck = async (req, res) => {
     const { userEmail, userPW } = req.body;
     try {
@@ -59,6 +59,12 @@ exports.loginCheck = async (req, res) => {
             const hashedPW = Buffer.from(user.userPW).toString();
             if (await hashCompare(userPW, hashedPW)) {
                 isMatch = true;
+                req.session.is_logined = true;
+                req.session.userID = user.userID;
+                req.session.userName = user.userName;
+                console.log('세션 정보 : ', req.session);
+                console.log('회원 정보 : ', user);
+                res.status(200).json({ session: req.session });
                 break;
             }
         }
@@ -66,22 +72,31 @@ exports.loginCheck = async (req, res) => {
             req.session.destroy();
             res.status(401).json('비밀번호가 일치하지 않습니다.');
             return;
-        } else {
-            req.session.is_logined = true;
-            req.session.userID = getUser[0].userID;
-            console.log('세션 정보 : ', req.session);
-            userDB.updateSession(getUser[0].userID);
-            console.log('회원 정보 : ', getUser[0]);
-            res.status(200).json({ session: req.session });
         }
     } catch (error) {
         res.status(500).json(error);
     }
 };
 
-//회원 정보
-exports.getSession = (req, res) => {
-    const session = req.session;
-    console.log('session to client : ', session);
-    res.status(200).json({ session: session });
+//세션 삭제
+exports.logout = async (req, res) => {
+    console.log('삭제 하기전 :', req.session);
+    req.session.destroy(function (error) {
+        if (error) {
+            res.status(500).json('로그아웃 에러(서버)', error);
+        } else {
+            res.status(200).json('로그아웃 성공(서버)');
+            console.log('로그아웃 성공(서버)', req.session);
+        }
+    });
+};
+
+//접근 제어
+exports.isLogined = async (req, res) => {
+    console.log('접근 권한:', req.session.is_logined);
+    if (req.session.is_logined) {
+        res.status(200).json({ message: '접근 가능한 회원' });
+    } else {
+        res.status(401).json({ message: '로그인이 필요합니다.' });
+    }
 };

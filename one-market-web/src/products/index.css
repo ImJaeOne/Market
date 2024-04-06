@@ -13,7 +13,9 @@
 
 #products-nav {
     display: flex;
-    justify-content: space-around;
+}
+#product-nav {
+    margin-right: auto;
 }
 
 #product-upload {

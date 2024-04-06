@@ -1,10 +1,31 @@
 import './index.css';
+import { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { Button, Form, Select } from 'antd';
+import { Button, Form, Select, message } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
+import axios from 'axios';
 
-function ProductsPageComponent() {
+function ProductsPageComponent(props) {
+    const { session } = props;
+    const [isLogined, setIsLogined] = useState(false);
+    console.log(isLogined);
+    console.log(session);
     const history = useHistory();
+    const uploadAccess = () => {
+        axios
+            .post('http://localhost:3006/api/access', { session: `${session}` }, { withCredentials: true })
+            .then((result) => {
+                console.log('접근 가능');
+                setIsLogined(true);
+                history.push('/upload');
+            })
+            .catch((error) => {
+                console.error('접근 불가능 : ', error);
+                message.error('로그인이 필요한 서비스입니다.');
+                history.push('/login');
+            });
+    };
+
     const handleChange = (value) => {
         console.log(`selected ${value}`);
     };
@@ -55,7 +76,7 @@ function ProductsPageComponent() {
             <h1 id="product-headline">중고거래</h1>
             <Form>
                 <div id="products-nav">
-                    <Form.Item>
+                    <Form.Item name="category" id="category">
                         <Select
                             defaultValue="전체"
                             style={{
@@ -65,12 +86,7 @@ function ProductsPageComponent() {
                             options={option}
                         />
                     </Form.Item>
-                    <Button
-                        id="product-upload"
-                        size="large"
-                        onClick={() => history.push('/upload')}
-                        icon={<DownloadOutlined />}
-                    >
+                    <Button id="product-upload" size="large" onClick={() => uploadAccess()} icon={<DownloadOutlined />}>
                         상품 업로드
                     </Button>
                 </div>

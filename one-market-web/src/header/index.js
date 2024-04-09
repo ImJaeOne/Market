@@ -6,7 +6,6 @@ import axios from 'axios';
 function HeaderComponent(props) {
     const history = useHistory();
     const { Search } = Input;
-    console.log('header : ', props.session);
     const onSearch = (value, _e, info) => console.log(info?.source, value);
 
     const logout = async () => {
@@ -18,6 +17,7 @@ function HeaderComponent(props) {
                 console.log('로그아웃 성공');
                 document.cookie = 'userID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
                 props.setSession(null);
+                message.info('로그아웃 성공');
             })
             .catch((error) => {
                 console.error('로그아웃 에러 : ', error);

@@ -10,14 +10,7 @@ const port = 3006;
 
 app.use(morgan('dev'));
 
-app.get('/favicon.ico', (req, res) => res.status(204));
-
-// app.use((req, res, next) => {
-//     res.header('Cache-Control', 'no-cache, no-store');
-//     res.header('Pragma', 'no-cache');
-//     res.header('Expires', '0');
-//     next();
-// });
+// app.get('/favicon.ico', (req, res) => res.status(204));
 
 app.use(
     session({

@@ -1,30 +1,49 @@
 import './index.css';
-import { useState } from 'react';
-import { Button, message, Form, Divider, Input } from 'antd';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { Button, message, Form } from 'antd';
+import axios from 'axios';
 
 function ProductPageComponent() {
-    const [disabled, setDisabled] = useState(false);
-    const [showTextarea, setShowTextarea] = useState(false);
-    const [text, setText] = useState('');
-    const [reply, setReply] = useState(false);
-
-    const handleButtonClick = () => {
-        setShowTextarea(!showTextarea);
-        setText('');
+    const { productID } = useParams();
+    const [product, setProduct] = useState(null);
+    const getProduct = async () => {
+        await axios
+            .get(`http://localhost:3006/product/${productID}`)
+            .then((result) => {
+                setProduct(result.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
-
-    const replyButton = () => {
-        setShowTextarea(!showTextarea);
-        setReply(!reply);
-        console.log(text);
+    useEffect(function () {
+        getProduct();
+    }, []);
+    if (product === null) {
+        return <h1>상품 정보를 받고 있습니다...</h1>;
+    }
+    const onClickPurchase = async () => {
+        await axios
+            .post(`http://localhost:3006/product/purchase/${productID}`)
+            .then((result) => {
+                message.info('상품 구매가 완료되었습니다.');
+                getProduct();
+            })
+            .catch((error) => {
+                message.error('상품 구매에 실패했습니다.');
+            });
     };
-
-    const handleTextareaChange = (e) => {
-        setText(e.target.value);
-    };
-    const onClickPurchase = () => {
-        message.info('상품 구매가 완료되었습니다.');
-        setDisabled(true);
+    const onClickPurchaseCancel = async () => {
+        await axios
+            .post(`http://localhost:3006/product/purchaseCancel/${productID}`)
+            .then((result) => {
+                message.info('상품 구매가 취소되었습니다.');
+                getProduct();
+            })
+            .catch((error) => {
+                message.error('상품 구매 취소에 실패했습니다.');
+            });
     };
     return (
         <div>
@@ -34,94 +53,22 @@ function ProductPageComponent() {
                 </div>
                 <div id="profile-box">
                     <img src="/images/avatar.png" alt="avatar" />
-                    <span>임재원</span>
+                    <span>{product[0].userName}</span>
                 </div>
                 <div id="contents-box">
-                    <div id="name">맥북 16인치</div>
-                    <div id="price">300000원</div>
-                    <div id="createdAt">2024-03-26</div>
+                    <div id="name">{product[0].productName}</div>
+                    <div id="price">{product[0].productPrice}</div>
+                    <div id="createdAt">{product[0].productUploadDate}</div>
                     <Button
                         id="purchase-button"
                         size="large"
                         type="primary"
                         danger
-                        onClick={onClickPurchase}
-                        disabled={disabled}
+                        onClick={product[0].productsoldout === 1 ? onClickPurchaseCancel : onClickPurchase}
                     >
-                        구매하기
+                        {product[0].productsoldout === 1 ? '구매 취소' : '구매하기'}
                     </Button>
-                    <div id="description">임재원이 사용하던 맥북입니다. </div>
-                    <div id="description">코딩할 때 주로 사용하던 노트북입니다.</div>
-                </div>
-                <div id="question">
-                    <div id="question-header">
-                        <h2>Q&A</h2>
-                        <span>판매자에게 궁금한 내용을 물어보세요.</span>
-                    </div>
-                    <Divider />
-                    <div id="comment-wrap">
-                        <div className="comment-list">
-                            <div className="comment-profile-box">
-                                <img src="/images/avatar.png" alt="avatar" />
-                                <span>강종협</span>
-                            </div>
-                            <div className="comment">망가진 곳은 없나요?</div>
-                            {/* 게시물 주인만 보이도록 */}
-                            {!reply && (
-                                <Button className="owner-reply-toggle" onClick={handleButtonClick}>
-                                    {showTextarea ? '취소' : '답글'}
-                                </Button>
-                            )}
-                        </div>
-                        {showTextarea && (
-                            <div className="reply-area">
-                                <Input.TextArea
-                                    name="owner_reply_text"
-                                    value={text}
-                                    onChange={handleTextareaChange}
-                                    placeholder="답글을 입력하세요"
-                                    autoSize={{ minRows: 3, maxRows: 5 }}
-                                />
-                                <Button className="owner-reply-btn" onClick={replyButton} htmlType="submit">
-                                    답글 달기
-                                </Button>
-                            </div>
-                        )}
-                        {reply && (
-                            <div className="owner-reply">
-                                <img className="owner-reply-arrow" src="/images/reply.png" alt="reply-arrow"></img>
-                                <div className="comment-profile-box">
-                                    <img src="/images/avatar.png" alt="avatar" />
-                                    <span>임재원</span>
-                                </div>
-                                <div className="comment">{text}</div>
-                            </div>
-                        )}
-                        <Divider />
-                        {!showTextarea && (
-                            <div className="reply-area">
-                                <Input.TextArea
-                                    name="customer_reply_text"
-                                    value={text}
-                                    onChange={handleTextareaChange}
-                                    placeholder="질문을 입력하세요"
-                                    autoSize={{ minRows: 3, maxRows: 5 }}
-                                />
-                                <Button className="customer-reply-btn" onClick={replyButton} htmlType="submit">
-                                    댓글
-                                </Button>
-                            </div>
-                        )}
-                        {reply && (
-                            <div className="customer-reply">
-                                <div className="comment-profile-box">
-                                    <img src="/images/avatar.png" alt="avatar" />
-                                    <span>임재원</span>
-                                </div>
-                                <div className="comment">{text}</div>
-                            </div>
-                        )}
-                    </div>
+                    <pre id="description">{product[0].productDescription} </pre>
                 </div>
             </Form>
         </div>

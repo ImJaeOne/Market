@@ -16,39 +16,39 @@ function App() {
     const [session, setSession] = useState(null);
 
     useEffect(() => {
+        const checkSession = async () => {
+            //쿠키에서 userID값만 가져오기
+            const cookies = document.cookie.split(';').map((cookie) => cookie.trim());
+            let userID = null;
+            for (const cookie of cookies) {
+                if (cookie.startsWith('userID=')) {
+                    userID = cookie.substring('userID='.length);
+                    break;
+                }
+            }
+            await axios
+                .post(
+                    'http://localhost:3006/api/userData',
+                    { userID: userID },
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        withCredentials: true,
+                    }
+                )
+                .then((result) => {
+                    setSession(result.data[0]);
+                    console.log('세션 접근', result.data[0]);
+                })
+                .catch((error) => {
+                    setSession(null);
+                    console.error('세션 접근 에러', error);
+                });
+        };
         checkSession();
     }, []);
-    const checkSession = async () => {
-        //쿠키에서 userID값만 가져오기
-        const cookies = document.cookie.split(';').map((cookie) => cookie.trim());
-        let userID = null;
-        for (const cookie of cookies) {
-            if (cookie.startsWith('userID=')) {
-                userID = cookie.substring('userID='.length);
-                break;
-            }
-        }
-        await axios
-            .post(
-                'http://localhost:3006/api/userData',
-                { userID: userID },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    withCredentials: true,
-                }
-            )
-            .then((result) => {
-                setSession(result.data[0]);
-                console.log('세션', session);
-                console.log('세션 접근', result.data[0]);
-            })
-            .catch((error) => {
-                setSession(null);
-                console.error('세션 접근 에러', error);
-            });
-    };
+
     return (
         <div>
             <HeaderComponent session={session} setSession={setSession} />
@@ -60,7 +60,7 @@ function App() {
                     <Route exact={true} path="/products">
                         <ProductsPageComponent session={session} setSession={setSession} />
                     </Route>
-                    <Route exact={true} path="/product">
+                    <Route exact={true} path="/product/:productID">
                         <ProductPageComponent />
                     </Route>
                     <Route exact path="/upload">

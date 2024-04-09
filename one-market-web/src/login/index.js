@@ -31,7 +31,7 @@ function LoginPageComponent(prop) {
             message.info('로그인 성공');
             console.log('세션 정보: ', result.data.session);
             setSession(result.data.session);
-            history.push('/');
+            history.goBack();
         } catch (error) {
             message.error('로그인 실패');
             console.error('로그인 실패:', error);

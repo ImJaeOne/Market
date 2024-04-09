@@ -53,17 +53,17 @@ exports.loginCheck = async (req, res) => {
             res.status(401).json('존재하지 않는 아이디입니다.');
             return;
         }
-
         let isMatch = false;
         for (const user of getUser) {
             const hashedPW = Buffer.from(user.userPW).toString();
             if (await hashCompare(userPW, hashedPW)) {
                 isMatch = true;
-                req.session.is_logined = true;
                 req.session.userID = user.userID;
+                req.session.userEmail = user.userEmail;
                 req.session.userName = user.userName;
                 console.log('세션 정보 : ', req.session);
                 console.log('회원 정보 : ', user);
+                res.cookie('userID', user.userID, { maxAge: 3600000 });
                 res.status(200).json({ session: req.session });
                 break;
             }
@@ -85,6 +85,7 @@ exports.logout = async (req, res) => {
         if (error) {
             res.status(500).json('로그아웃 에러(서버)', error);
         } else {
+            res.clearCookie('userID');
             res.status(200).json('로그아웃 성공(서버)');
             console.log('로그아웃 성공(서버)', req.session);
         }
@@ -92,11 +93,23 @@ exports.logout = async (req, res) => {
 };
 
 //접근 제어
-exports.isLogined = async (req, res) => {
-    console.log('접근 권한:', req.session.is_logined);
-    if (req.session.is_logined) {
-        res.status(200).json({ message: '접근 가능한 회원' });
+exports.userData = async (req, res) => {
+    const { userID } = req.body;
+    console.log(userID);
+    if (userID) {
+        const getUserData = await userDB.getUserData(userID);
+        res.status(200).json(getUserData);
     } else {
-        res.status(401).json({ message: '로그인이 필요합니다.' });
+        res.status(401).json('유저 정보 받아올 수 없음(userID)');
+    }
+};
+
+exports.userDataEmail = async (req, res) => {
+    const { userEmail } = req.body;
+    if (userID) {
+        const getUser = await userDB.getUser(userEmail);
+        res.status(200).json(getUser);
+    } else {
+        res.stauts(401).json('유저 정보 받아올 수 없음(userEmail)');
     }
 };

@@ -7,7 +7,6 @@ function ProductPageComponent() {
     const [showTextarea, setShowTextarea] = useState(false);
     const [text, setText] = useState('');
     const [reply, setReply] = useState(false);
-    // const [owner, setOwner] = useState(false);
 
     const handleButtonClick = () => {
         setShowTextarea(!showTextarea);

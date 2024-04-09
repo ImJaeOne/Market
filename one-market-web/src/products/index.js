@@ -1,31 +1,24 @@
 import './index.css';
-import { useState } from 'react';
+// import { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Button, Form, Select, message } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
-import axios from 'axios';
+// import axios from 'axios';
 
 function ProductsPageComponent(props) {
-    const { session } = props;
-    const [isLogined, setIsLogined] = useState(false);
-    console.log(isLogined);
-    console.log(session);
     const history = useHistory();
-    const uploadAccess = () => {
-        axios
-            .post('http://localhost:3006/api/access', { session: `${session}` }, { withCredentials: true })
-            .then((result) => {
-                console.log('접근 가능');
-                setIsLogined(true);
-                history.push('/upload');
-            })
-            .catch((error) => {
-                console.error('접근 불가능 : ', error);
-                message.error('로그인이 필요한 서비스입니다.');
-                history.push('/login');
-            });
+    // const [products, setProducts] = useState([]);
+    // useEffect(function ()=> {
+    //     axios.get('http://locahost:3005/api/')
+    // })
+    const toUploadPage = () => {
+        if (!props.session.userEmail) {
+            history.push('/login');
+            message.error('로그인이 필요합니다.');
+        } else {
+            history.push('/upload');
+        }
     };
-
     const handleChange = (value) => {
         console.log(`selected ${value}`);
     };
@@ -86,7 +79,7 @@ function ProductsPageComponent(props) {
                             options={option}
                         />
                     </Form.Item>
-                    <Button id="product-upload" size="large" onClick={() => uploadAccess()} icon={<DownloadOutlined />}>
+                    <Button id="product-upload" size="large" onClick={toUploadPage} icon={<DownloadOutlined />}>
                         상품 업로드
                     </Button>
                 </div>

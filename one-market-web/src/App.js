@@ -1,111 +1,73 @@
 import 'antd/dist/antd.css';
 import './App.css';
-import { useState } from 'react';
-import { Switch, Route, Link, useHistory } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Switch, Route } from 'react-router-dom';
+
+import HeaderComponent from './header';
 import MainPageComponent from './main';
 import ProductsPageComponent from './products';
 import ProductPageComponent from './product';
 import UploadPageComponent from './upload';
 import LoginPageComponent from './login';
 import SignupPageComponent from './signup';
-import { message, Input } from 'antd';
 import axios from 'axios';
 
 function App() {
-    const history = useHistory();
-    const [session, setSession] = useState(localStorage.getItem('session'));
+    const [session, setSession] = useState(null);
 
-    const handleSession = (sessionData) => {
-        console.log('로그아웃 하기전 세션 데이터', sessionData);
-        setSession(sessionData);
-        localStorage.setItem('session', sessionData);
-    };
-
-    const logout = () => {
-        axios
-            .post('http://localhost:3006/api/logout', null, {
-                withCredentials: true,
-            })
-            .then((res) => {
-                console.log('로그아웃 성공');
-                setSession(null);
-                localStorage.removeItem('session');
+    useEffect(() => {
+        checkSession();
+    }, []);
+    const checkSession = async () => {
+        //쿠키에서 userID값만 가져오기
+        const cookies = document.cookie.split(';').map((cookie) => cookie.trim());
+        let userID = null;
+        for (const cookie of cookies) {
+            if (cookie.startsWith('userID=')) {
+                userID = cookie.substring('userID='.length);
+                break;
+            }
+        }
+        await axios
+            .post(
+                'http://localhost:3006/api/userData',
+                { userID: userID },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    withCredentials: true,
+                }
+            )
+            .then((result) => {
+                setSession(result.data[0]);
+                console.log('세션', session);
+                console.log('세션 접근', result.data[0]);
             })
             .catch((error) => {
-                console.error('로그아웃 에러 : ', error);
+                setSession(null);
+                console.error('세션 접근 에러', error);
             });
     };
-    const prepare = () => {
-        message.info('준비 중인 서비스입니다.');
-    };
-
-    const { Search } = Input;
-    const onSearch = (value, _e, info) => console.log(info?.source, value);
-
     return (
         <div>
-            <header id="header-wrap">
-                <div id="header">
-                    <div id="left-header">
-                        <Link to="/">
-                            <span id="logo">
-                                <img src="/images/one.png" alt="to-index" width="30px" height="30px" />
-                                One Market
-                            </span>
-                        </Link>
-                        <Link to="/products" className="nav-menu" alt="to-products">
-                            중고거래
-                        </Link>
-                        <div
-                            onClick={() => {
-                                prepare();
-                            }}
-                            className="nav-menu"
-                            alt="to-place"
-                        >
-                            거래지역
-                        </div>
-                    </div>
-                    <div id="right-header">
-                        <Search id="search" placeholder="물품이나 동네를 검색해보세요" onSearch={onSearch} />
-                        <div>
-                            {session !== null ? (
-                                <div className="to-logout">
-                                    <div className="to-login">{session.userName}님</div>
-                                    <div
-                                        className="to-login"
-                                        onClick={() => {
-                                            logout();
-                                        }}
-                                    >
-                                        로그아웃
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="to-login" onClick={() => history.push('/login')}>
-                                    로그인
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <HeaderComponent session={session} setSession={setSession} />
             <section id="body">
                 <Switch>
                     <Route exact={true} path="/">
                         <MainPageComponent />
                     </Route>
                     <Route exact={true} path="/products">
-                        <ProductsPageComponent session={session} />
+                        <ProductsPageComponent session={session} setSession={setSession} />
                     </Route>
                     <Route exact={true} path="/product">
                         <ProductPageComponent />
                     </Route>
-                    <Route exact={true} path="/upload">
-                        <UploadPageComponent session={session} />
+                    <Route exact path="/upload">
+                        <UploadPageComponent session={session} setSession={setSession} />
                     </Route>
                     <Route exact={true} path="/login">
-                        <LoginPageComponent onSession={handleSession} />
+                        <LoginPageComponent session={session} setSession={setSession} />
                     </Route>
                     <Route exact={true} path="/signup">
                         <SignupPageComponent />

@@ -5,32 +5,23 @@ import { Form, Upload, Divider, Input, InputNumber, Button, message, Select } fr
 import axios from 'axios';
 
 function UploadPageComponent(props) {
-    const { session } = props;
     const [imageUrl, setImageUrl] = useState(null);
-    const [isLogined, setIsLogined] = useState(false);
-    console.log(isLogined);
-    axios
-        .post('http://localhost:3006/api/access', { session: `${session}` }, { withCredentials: true })
-        .then((result) => {
-            console.log('접근 가능');
-            setIsLogined(true);
-        })
-        .catch((error) => {
-            console.error('접근 불가능 : ', error);
-            message.error('로그인이 필요한 서비스입니다.');
-            history.push('/login');
-        });
     const history = useHistory();
+    if (props.session === null) {
+        history.push('/login');
+        message.error('로그인이 필요합니다');
+    }
     const onSubmit = (values) => {
         console.log(values);
+        message.info('상품 등록이 완료되었습니다.');
         axios
-            .post('https://13772fc3-b8e4-44a1-b7e9-69cd5fcfc611.mock.pstmn.io/product-value', {
-                name: values.name,
-                category: values.category,
-                description: values.description,
-                seller: values.seller,
-                price: parseInt(values.price),
-                imageUrl: null,
+            .post('http://localhost:3006/product/upload', {
+                productName: values.productName,
+                productCategory: values.productCategory,
+                productDescription: values.productDescription,
+                productPrice: parseInt(values.productPrice),
+                productImageUrl: null,
+                userID: props.session.userID,
             })
             .then((result) => {
                 console.log(result);
@@ -100,7 +91,7 @@ function UploadPageComponent(props) {
         <div id="upload-wrap">
             <div id="upload-headline">상품 업로드</div>
             <Form name="upload" onFinish={onSubmit}>
-                <Form.Item name="upload" label={<div className="upload-label">상품 사진</div>}>
+                <Form.Item name="productImageUrl" label={<div className="upload-label">상품 사진</div>}>
                     <Upload
                         name="image"
                         action={'/image'}
@@ -120,15 +111,7 @@ function UploadPageComponent(props) {
                 </Form.Item>
                 <Divider />
                 <Form.Item
-                    name="seller"
-                    label={<div className="upload-label">판매자명</div>}
-                    rules={[{ required: true, message: '판매자명을 입력해주세요.' }]}
-                >
-                    <Input className="upload-name" size="large" placeholder="판매자명을 입력해주세요." />
-                </Form.Item>
-                <Divider />
-                <Form.Item
-                    name="category"
+                    name="productCategory"
                     label={<div className="upload-label">카테고리</div>}
                     rules={[{ required: true, message: '카테고리를 선택해주세요.' }]}
                 >
@@ -143,7 +126,7 @@ function UploadPageComponent(props) {
                 </Form.Item>
                 <Divider />
                 <Form.Item
-                    name="name"
+                    name="productName"
                     label={<div className="upload-label">상품명</div>}
                     rules={[{ required: true, message: '상품명을 입력해주세요.' }]}
                 >
@@ -151,7 +134,7 @@ function UploadPageComponent(props) {
                 </Form.Item>
                 <Divider />
                 <Form.Item
-                    name="price"
+                    name="productPrice"
                     label={<div className="upload-label">상품 가격</div>}
                     rules={[{ required: true, message: '상품가격을 입력해주세요.' }]}
                 >
@@ -159,7 +142,7 @@ function UploadPageComponent(props) {
                 </Form.Item>
                 <Divider />
                 <Form.Item
-                    name="description"
+                    name="productDescription"
                     label={<div className="upload-label">상품 소개</div>}
                     rules={[{ required: true, message: '상품 소개를 입력해주세요.' }]}
                 >

@@ -1,9 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const userRoutes = require('./userRoutes');
+const productRoutes = require('./productRoutes');
 const session = require('express-session');
-const path = require('path');
-const FileStore = require('session-file-store')(session);
 const morgan = require('morgan');
 
 const app = express();
@@ -13,24 +12,32 @@ app.use(morgan('dev'));
 
 app.get('/favicon.ico', (req, res) => res.status(204));
 
-app.use((req, res, next) => {
-    res.header('Cache-Control', 'no-cache, no-store');
-    res.header('Pragma', 'no-cache');
-    res.header('Expires', '0');
-    next();
-});
+// app.use((req, res, next) => {
+//     res.header('Cache-Control', 'no-cache, no-store');
+//     res.header('Pragma', 'no-cache');
+//     res.header('Expires', '0');
+//     next();
+// });
 
 app.use(
     session({
         secret: 'av*Sve#sd%%fdsa',
         resave: false,
-        saveUninitialized: false,
-        store: new FileStore(),
+        saveUninitialized: true,
+        cookie: {
+            domain: 'localhost',
+            path: '/',
+            maxAge: 24 * 6 * 60 * 10000,
+            sameSite: 'strict',
+            httpOnly: true,
+            secure: false, //https일 경우 true로 설정
+        },
     })
 );
 app.use(
     cors({
         origin: 'http://localhost:3005',
+        methods: ['GET', 'POST', 'OPTIONS'],
         credentials: true,
     })
 );
@@ -38,6 +45,7 @@ app.use(
 app.use(express.json());
 
 app.use('/api', userRoutes);
+app.use('/product', productRoutes);
 
 app.listen(port, () => {
     console.log('one-market-server on!');

@@ -27,3 +27,15 @@ exports.signUp = (data) => {
         );
     });
 };
+
+exports.getUserData = (userID) => {
+    return new Promise((resolve, reject) => {
+        db.query(`SELECT * FROM user where userID = ?`, userID, (error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+};

@@ -1,0 +1,65 @@
+#header-wrap {
+    position: fixed;
+    z-index: 999;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+    border-bottom: 1px solid black;
+}
+
+#header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    background-color: white;
+    padding-left: 10rem;
+    padding-right: 10rem;
+}
+
+#left-header {
+    display: flex;
+    flex-direction: row;
+}
+
+#right-header {
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+}
+
+#logo {
+    padding-right: 3rem;
+    min-width: 230px;
+    display: flex;
+    font-size: 30px;
+    height: 50px;
+    align-items: center;
+    font-family: Hanna;
+}
+
+.nav-menu {
+    display: flex;
+    margin-right: 3rem;
+    font-size: 17px;
+    align-items: center;
+    cursor: pointer;
+    min-width: 68px;
+}
+
+.to-login {
+    min-width: 68px;
+    font-size: 17px;
+    cursor: pointer;
+    margin-left: 48px;
+}
+
+.to-logout {
+    display: flex;
+    font-size: 17px;
+}
+
+#search {
+    width: 250px;
+}

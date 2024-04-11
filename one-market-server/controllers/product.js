@@ -76,8 +76,10 @@ exports.purchaseCancelProduct = async (req, res) => {
 
 exports.uploadImage = async (req, res) => {
     const file = req.file;
-    console.log(file);
-    res.send({
-        productImageUrl: file.path,
-    });
+    console.log(file.path);
+    try {
+        res.status(200).json({ productImageUrl: `${file.filename}` });
+    } catch (error) {
+        console.log('이미지 업로드 에러:', error);
+    }
 };

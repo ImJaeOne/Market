@@ -7,6 +7,10 @@ import axios from 'axios';
 function UploadPageComponent(props) {
     const [imageUrl, setImageUrl] = useState(null);
     const history = useHistory();
+    if (props.session === null) {
+        history.push('/login');
+        message.error('로그인이 필요합니다');
+    }
     const onSubmit = (values) => {
         console.log(values);
         message.info('상품 등록이 완료되었습니다.');
@@ -34,7 +38,7 @@ function UploadPageComponent(props) {
         }
         if (info.file.status === 'done') {
             const response = info.file.response;
-            const imageUrl = response.imageUrl;
+            const imageUrl = response.productImageUrl;
             setImageUrl(imageUrl);
             console.log(imageUrl);
         }
@@ -84,15 +88,15 @@ function UploadPageComponent(props) {
             label: '헬스',
         },
     ];
-    if (props.session === null) {
-        history.push('/login');
-        message.error('로그인이 필요합니다');
-    }
     return (
         <div id="upload-wrap">
             <div id="upload-headline">상품 업로드</div>
             <Form name="upload" onFinish={onSubmit}>
-                <Form.Item name="productImageUrl" label={<div className="upload-label">상품 사진</div>}>
+                <Form.Item
+                    name="productImageUrl"
+                    label={<div className="upload-label">상품 사진</div>}
+                    rules={[{ required: true, message: '상품 사진을 업로드해주세요.' }]}
+                >
                     <Upload
                         name="image"
                         action={'http://localhost:3006/product/image'}
@@ -101,7 +105,7 @@ function UploadPageComponent(props) {
                         onChange={onChangeImage}
                     >
                         {imageUrl ? (
-                            <img id="upload-img" src={`http://localhost:3006${imageUrl}`} alt="upload-img" />
+                            <img id="upload-img" src={`http://localhost:3006/uploads/${imageUrl}`} alt="upload-img" />
                         ) : (
                             <div id="upload-img-placeholder">
                                 <img src="/images/camera.png" alt="upload" />

@@ -100,7 +100,11 @@ function ProductsPageComponent(props) {
                         return (
                             <Link to={`/product/${product.productID}`} className="product-card" key={product.productID}>
                                 <div>
-                                    <img className="product-img" src="images/notebook1.jpg" alt="product-img" />
+                                    <img
+                                        className="product-img"
+                                        src={`http://localhost:3006/uploads/${product.productImgUrl}`}
+                                        alt="product-img"
+                                    />
                                 </div>
                                 <div className="product-contents">
                                     <span className="product-name">{product.productName}</span>

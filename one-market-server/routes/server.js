@@ -37,7 +37,7 @@ app.use(express.json());
 
 app.use('/api', userRoutes);
 app.use('/product', productRoutes);
-// app.use('/uploads', express.static('../database/uploads'));
+app.use('/uploads', express.static('../database/uploads'));
 
 app.listen(port, () => {
     console.log('one-market-server on!');

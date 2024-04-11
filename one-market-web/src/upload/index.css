@@ -57,3 +57,10 @@
     padding-left: 5px;
     text-align: left;
 }
+
+#upload-img {
+    width: 200px;
+    height: 200px;
+    margin-left: 16px;
+    object-fit: contain;
+}

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, message, Form } from 'antd';
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 function ProductPageComponent() {
     const { productID } = useParams();
@@ -58,7 +59,7 @@ function ProductPageComponent() {
                 <div id="contents-box">
                     <div id="name">{product[0].productName}</div>
                     <div id="price">{product[0].productPrice}</div>
-                    <div id="createdAt">{product[0].productUploadDate}</div>
+                    <div id="createdAt">{dayjs(product[0].productUploadDate).format('YYYY-MM-DD')}</div>
                     <Button
                         id="purchase-button"
                         size="large"

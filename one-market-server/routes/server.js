@@ -10,8 +10,6 @@ const port = 3006;
 
 app.use(morgan('dev'));
 
-// app.get('/favicon.ico', (req, res) => res.status(204));
-
 app.use(
     session({
         secret: 'av*Sve#sd%%fdsa',
@@ -39,6 +37,7 @@ app.use(express.json());
 
 app.use('/api', userRoutes);
 app.use('/product', productRoutes);
+// app.use('/uploads', express.static('../database/uploads'));
 
 app.listen(port, () => {
     console.log('one-market-server on!');

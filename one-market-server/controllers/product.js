@@ -1,14 +1,13 @@
 const productDB = require('../models/productDB');
-const userDB = require('../models/userDB');
 
 exports.uploadProducts = async (req, res) => {
-    const { productName, productPrice, productDescription, productImgUrl, productCategory, userID } = req.body;
+    const { productName, productPrice, productDescription, productImageUrl, productCategory, userID } = req.body;
     try {
         await productDB.uploadProducts([
             productName,
             productPrice,
             productDescription,
-            productImgUrl,
+            productImageUrl,
             productCategory,
             userID,
         ]);
@@ -64,7 +63,7 @@ exports.purchaseProduct = async (req, res) => {
 exports.purchaseCancelProduct = async (req, res) => {
     const { productID } = req.params;
     await productDB
-        .purchaseProduct(productID)
+        .purchaseCancel(productID)
         .then((result) => {
             console.log('purchase success!');
             res.status(200).json({ result: true });
@@ -73,4 +72,12 @@ exports.purchaseCancelProduct = async (req, res) => {
             console.error('purchase failed... : ', error);
             res.status(500).json(error);
         });
+};
+
+exports.uploadImage = async (req, res) => {
+    const file = req.file;
+    console.log(file);
+    res.send({
+        productImageUrl: file.path,
+    });
 };

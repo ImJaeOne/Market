@@ -7,10 +7,6 @@ import axios from 'axios';
 function UploadPageComponent(props) {
     const [imageUrl, setImageUrl] = useState(null);
     const history = useHistory();
-    if (props.session === null) {
-        history.push('/login');
-        message.error('로그인이 필요합니다');
-    }
     const onSubmit = (values) => {
         console.log(values);
         message.info('상품 등록이 완료되었습니다.');
@@ -20,7 +16,7 @@ function UploadPageComponent(props) {
                 productCategory: values.productCategory,
                 productDescription: values.productDescription,
                 productPrice: parseInt(values.productPrice),
-                productImageUrl: null,
+                productImageUrl: imageUrl,
                 userID: props.session.userID,
             })
             .then((result) => {
@@ -40,6 +36,7 @@ function UploadPageComponent(props) {
             const response = info.file.response;
             const imageUrl = response.imageUrl;
             setImageUrl(imageUrl);
+            console.log(imageUrl);
         }
     };
     const handleChange = (value) => {
@@ -87,6 +84,10 @@ function UploadPageComponent(props) {
             label: '헬스',
         },
     ];
+    if (props.session === null) {
+        history.push('/login');
+        message.error('로그인이 필요합니다');
+    }
     return (
         <div id="upload-wrap">
             <div id="upload-headline">상품 업로드</div>
@@ -94,13 +95,13 @@ function UploadPageComponent(props) {
                 <Form.Item name="productImageUrl" label={<div className="upload-label">상품 사진</div>}>
                     <Upload
                         name="image"
-                        action={'/image'}
+                        action={'http://localhost:3006/product/image'}
                         listType="picture"
                         showUploadList={false}
                         onChange={onChangeImage}
                     >
                         {imageUrl ? (
-                            <img id="upload-img" src={'/image'} alt="upload-img" />
+                            <img id="upload-img" src={`http://localhost:3006${imageUrl}`} alt="upload-img" />
                         ) : (
                             <div id="upload-img-placeholder">
                                 <img src="/images/camera.png" alt="upload" />

@@ -61,7 +61,7 @@ function App() {
                         <ProductsPageComponent session={session} setSession={setSession} />
                     </Route>
                     <Route exact={true} path="/product/:productID">
-                        <ProductPageComponent />
+                        <ProductPageComponent session={session} setSession={setSession} />
                     </Route>
                     <Route exact path="/upload">
                         <UploadPageComponent session={session} setSession={setSession} />

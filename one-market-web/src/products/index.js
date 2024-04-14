@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 
 function ProductsPageComponent(props) {
     const history = useHistory();
-    const [products, setProducts] = useState([]);
+    const [products, getProducts] = useState([]);
 
     useEffect(function () {
         axios
@@ -16,7 +16,7 @@ function ProductsPageComponent(props) {
             .then(function (result) {
                 const products = result.data;
                 console.log(products);
-                setProducts(products);
+                getProducts(products);
             })
             .catch(function (error) {
                 console.log(error);

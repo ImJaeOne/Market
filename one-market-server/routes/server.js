@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const userRoutes = require('./userRoutes');
 const productRoutes = require('./productRoutes');
+const askRoutes = require('./askRoutes');
 const session = require('express-session');
 const morgan = require('morgan');
 
@@ -38,6 +39,7 @@ app.use(express.json());
 app.use('/api', userRoutes);
 app.use('/product', productRoutes);
 app.use('/uploads', express.static('../database/uploads'));
+app.use('/ask', askRoutes);
 
 app.listen(port, () => {
     console.log('one-market-server on!');

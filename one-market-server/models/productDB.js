@@ -32,10 +32,7 @@ exports.getProducts = () => {
 exports.getProductDetail = (productID) => {
     return new Promise((resolve, reject) => {
         db.query(
-            `SELECT product.*, user.userName
-            FROM product
-            JOIN user ON product.userID = user.userID
-            WHERE product.productID = ?`,
+            `SELECT product.*, user.userName FROM product JOIN user ON product.userID = user.userID WHERE product.productID = ?`,
             productID,
             (error, result) => {
                 if (error) {

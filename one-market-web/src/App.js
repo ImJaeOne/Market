@@ -19,6 +19,7 @@ function App() {
         const checkSession = async () => {
             //쿠키에서 userID값만 가져오기
             const cookies = document.cookie.split(';').map((cookie) => cookie.trim());
+            console.log(cookies);
             let userID = null;
             for (const cookie of cookies) {
                 if (cookie.startsWith('userID=')) {
@@ -40,6 +41,7 @@ function App() {
                 .then((result) => {
                     setSession(result.data[0]);
                     console.log('세션 접근', result.data[0]);
+                    console.log('app.js:', session);
                 })
                 .catch((error) => {
                     setSession(null);

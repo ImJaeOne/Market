@@ -33,7 +33,6 @@ exports.getProducts = async (req, res) => {
 
 exports.getProductDetail = async (req, res) => {
     const { productID } = req.params;
-    console.log(productID);
     await productDB
         .getProductDetail(productID)
         .then((result) => {

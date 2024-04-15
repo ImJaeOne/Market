@@ -6,20 +6,49 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 
 function ProductPageComponent(props) {
+    console.log('productpage prop:', props);
     const { productID } = useParams();
+    const history = useHistory();
     const [product, setProduct] = useState(null);
     const [owner, setOwner] = useState(null);
     const [showTextarea, setShowTextarea] = useState(false);
-    const [ask, getAsk] = useState([]);
+    const [ask, setAsk] = useState([]);
 
-    const handleButtonClick = () => {
-        setShowTextarea((prevState) => !prevState);
-    };
-    const history = useHistory();
     if (props.session === null) {
         history.push('/login');
         message.error('로그인이 필요합니다.', 3);
     }
+
+    useEffect(
+        function () {
+            const getAsk = async () => {
+                try {
+                    const result = await axios.get(`http://localhost:3006/ask/getAsk/${productID}`);
+                    const askData = result.data;
+                    setAsk(askData);
+                } catch (error) {
+                    console.log(error);
+                }
+            };
+            getAsk();
+        },
+        [productID]
+    );
+    useEffect(function () {
+        getProduct();
+        if (props.session === null) {
+            setOwner(null);
+            console.log('owner VS customer:', owner);
+        } else {
+            setOwner(props.session);
+            console.log('owner VS customer:', owner);
+        }
+    }, []);
+
+    const handleButtonClick = () => {
+        setShowTextarea((prevState) => !prevState);
+    };
+
     const getProduct = async () => {
         await axios
             .get(`http://localhost:3006/product/${productID}`)
@@ -31,28 +60,23 @@ function ProductPageComponent(props) {
                 console.error(error);
             });
     };
-    useEffect(function () {
-        getProduct();
-        if (props.session === null) {
-            setOwner(null);
-            console.log('owner VS customer:', owner);
-        } else {
-            setOwner(props.session);
-            console.log('owner VS customer:', owner);
-        }
-    }, []);
-    useEffect(function () {
-        axios
-            .get('http://localhost:3006/ask/getAsk')
-            .then(function (result) {
-                const ask = result.data;
-                console.log(ask);
-                getAsk(ask);
-            })
-            .catch(function (error) {
-                console.log(error);
+    const onSubmitAsk = async (values) => {
+        try {
+            const result = await axios.post('http://localhost:3006/ask/setAsk', {
+                askText: values.askText,
+                productID: productID,
+                userID: props.session.userID,
             });
-    }, []);
+            console.log(result);
+            const updatedResult = await axios.get(`http://localhost:3006/ask/getAsk/${productID}`);
+            const updatedAsk = updatedResult.data;
+            setAsk(updatedAsk);
+        } catch (error) {
+            console.log(error);
+            message.error(`에러가 발생했습니다. ${error.message}`);
+        }
+    };
+
     if (product === null) {
         return <h1>상품 정보를 받고 있습니다...</h1>;
     }
@@ -78,22 +102,7 @@ function ProductPageComponent(props) {
                 message.error('상품 구매 취소에 실패했습니다.');
             });
     };
-    const setAsk = async (values) => {
-        console.log(values.askText, productID, props.session.userID);
-        await axios
-            .post('http://localhost:3006/ask/setAsk', {
-                askText: values.askText,
-                productID: productID,
-                userID: props.session.userID,
-            })
-            .then((result) => {
-                console.log(result);
-            })
-            .catch((error) => {
-                console.log(error);
-                message.error(`에러가 발생했습니다. ${error.message}`);
-            });
-    };
+
     return (
         <div>
             <Form initialValues={{}}>
@@ -127,18 +136,23 @@ function ProductPageComponent(props) {
                 </div>
                 <Divider />
                 <div id="comment-wrap">
-                    <div className="comment-list">
-                        <div className="comment-profile-box">
-                            <img src="/images/avatar.png" alt="avatar" />
-                            <span>강종협</span>
-                        </div>
-                        <div className="comment">망가진 곳은 없나요?</div>
-                        <Button className="owner-reply-toggle" onClick={handleButtonClick}>
-                            {showTextarea ? '취소' : '답글'}
-                        </Button>
-                    </div>
+                    {ask.map(function (ask, index) {
+                        return (
+                            <div className="comment-list">
+                                <div className="comment-profile-box">
+                                    <img src="/images/avatar.png" alt="avatar" />
+                                    <span>{ask.userName}</span>
+                                </div>
+                                <div className="comment">{ask.askText}</div>
+                                <div>{dayjs(ask.askDate).format('YY-MM-DD')}</div>
+                                <Button className="owner-reply-toggle" onClick={handleButtonClick}>
+                                    {showTextarea ? '취소' : '답글'}
+                                </Button>
+                            </div>
+                        );
+                    })}
 
-                    <Form onFinish={setAsk}>
+                    <Form onFinish={onSubmitAsk}>
                         <Form.Item className="reply-area" name="askText">
                             <Input.TextArea placeholder="질문을 입력하세요" autoSize={{ minRows: 3, maxRows: 5 }} />
                         </Form.Item>

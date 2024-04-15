@@ -22,6 +22,6 @@ exports.getAsk = async (req, res) => {
         })
         .catch((error) => {
             console.log('get Ask failed...', error);
-            res.status(500).json(error);
+            res.status(500).json(error, productID);
         });
 };

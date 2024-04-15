@@ -18,12 +18,16 @@ exports.setAsk = (data) => {
 
 exports.getAsk = (productID) => {
     return new Promise((resolve, reject) => {
-        db.query(`SELECT * FROM ask WHERE productID = ?`, productID, (error, result) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(result);
+        db.query(
+            `SELECT ask.*, user.userName FROM ask JOIN user ON ask.userID = user.userid WHERE ask.productID = ?`,
+            productID,
+            (error, result) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(result);
+                }
             }
-        });
+        );
     });
 };

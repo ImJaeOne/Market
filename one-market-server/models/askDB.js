@@ -31,3 +31,15 @@ exports.getAsk = (productID) => {
         );
     });
 };
+
+exports.deleteAsk = (askID) => {
+    return new Promise((resolve, reject) => {
+        db.query('DELETE FROM ask WHERE askID = ?', askID, (error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+};

@@ -16,9 +16,14 @@ exports.uploadProducts = (data) => {
     });
 };
 
-exports.getProducts = () => {
+exports.getProducts = (category) => {
     return new Promise((resolve, reject) => {
-        db.query(`SELECT * FROM product`, (error, result) => {
+        let query = `SELECT * FROM product JOIN user ON product.userID = user.userID`;
+        if (category && category !== 'all') {
+            query += ` WHERE productCategory = '${category}'`;
+        }
+        query += ` ORDER BY productUploadDate DESC`;
+        db.query(query, (error, result) => {
             if (error) {
                 reject(error);
             } else {

@@ -1,28 +1,24 @@
 import './index.css';
 import { Link, useHistory } from 'react-router-dom';
 import { Input, message } from 'antd';
-import axios from 'axios';
+import sessionAuth from '../Session/sessionAuth';
 
 function HeaderComponent(props) {
+    const { session, setSession } = props;
     const history = useHistory();
     const { Search } = Input;
     const onSearch = (value, _e, info) => console.log(info?.source, value);
 
     const logout = async () => {
-        await axios
-            .post('http://localhost:3006/api/logout', null, {
-                withCredentials: true,
-            })
-            .then((res) => {
-                console.log('로그아웃 성공');
-                document.cookie = 'userID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-                props.setSession(null);
-                message.info('로그아웃 성공');
-            })
-            .catch((error) => {
-                console.error('로그아웃 에러 : ', error);
-            });
+        try {
+            await sessionAuth.handleLogout();
+            message.info('로그아웃 성공');
+            setSession(null);
+        } catch (error) {
+            console.error('로그아웃 에러 : ', error);
+        }
     };
+
     const prepare = () => {
         message.info('준비 중인 서비스입니다.');
     };
@@ -54,7 +50,7 @@ function HeaderComponent(props) {
                     <div>
                         {props.session !== null ? (
                             <div className="to-logout">
-                                <div className="to-login">{props.session.userName}님</div>
+                                <div className="to-login">{session.userName}님</div>
                                 <div
                                     className="to-login"
                                     onClick={() => {

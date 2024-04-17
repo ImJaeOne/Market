@@ -59,11 +59,10 @@ exports.loginCheck = async (req, res) => {
             if (await hashCompare(userPW, hashedPW)) {
                 isMatch = true;
                 req.session.userID = user.userID;
-                req.session.userEmail = user.userEmail;
-                req.session.userName = user.userName;
-                console.log('세션 정보 : ', req.session);
+                // req.session.userEmail = user.userEmail;
+                // req.session.userName = user.userName;
+                console.log('로그인 성공(세션) : ', req.session);
                 console.log('회원 정보 : ', user);
-                res.cookie('userID', user.userID, { maxAge: 3600000 });
                 res.status(200).json({ session: req.session });
                 break;
             }

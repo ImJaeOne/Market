@@ -1,20 +1,22 @@
 #header-wrap {
+    display: flex;
+    justify-content: center;
     position: fixed;
     z-index: 999;
     width: 100%;
     top: 0px;
     left: 0px;
     border-bottom: 1px solid black;
+    background: white;
 }
 
 #header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-
+    width: 70%;
+    min-width: 980px;
     background-color: white;
-    padding-left: 10rem;
-    padding-right: 10rem;
 }
 
 #left-header {

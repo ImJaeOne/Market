@@ -15,8 +15,8 @@ function ProductsPageComponent(props) {
             .get('http://localhost:3006/product/getProducts')
             .then(function (result) {
                 const products = result.data;
-                console.log(products);
                 getProducts(products);
+                console.log(products);
             })
             .catch(function (error) {
                 console.log(error);
@@ -31,8 +31,18 @@ function ProductsPageComponent(props) {
             history.push('/upload');
         }
     };
-    const handleChange = (value) => {
+    const categoryChange = (value) => {
         console.log(`selected ${value}`);
+        axios
+            .get(`http://localhost:3006/product/getProducts?category=${value}`)
+            .then(function (result) {
+                const products = result.data;
+                getProducts(products);
+                console.log(products);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     };
     const option = [
         {
@@ -87,7 +97,7 @@ function ProductsPageComponent(props) {
                             style={{
                                 width: 120,
                             }}
-                            onChange={handleChange}
+                            onChange={categoryChange}
                             options={option}
                         />
                     </Form.Item>
@@ -113,7 +123,7 @@ function ProductsPageComponent(props) {
                                     <div className="product-footer">
                                         <div className="product-seller">
                                             <img className="product-avatar" src="images/avatar.png" alt="profile-img" />
-                                            <span>임재원</span>
+                                            <span>{product.userName}</span>
                                         </div>
                                         <span className="product-date">
                                             {dayjs(product.productUploadDate).format('YYYY-MM-DD')}

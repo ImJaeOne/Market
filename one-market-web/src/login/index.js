@@ -1,12 +1,13 @@
 import './index.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Form, Input, Button, Divider, message } from 'antd';
-import axios from 'axios';
+import sessionAuth from '../Session/sessionAuth';
 
 function LoginPageComponent(prop) {
     const { setSession } = prop;
     const history = useHistory();
+    //중복 제출 방지
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const loginSubmit = async (values) => {
@@ -14,31 +15,20 @@ function LoginPageComponent(prop) {
         setIsSubmitting(true);
 
         try {
-            const result = await axios.post(
-                'http://localhost:3006/api/loginCheck',
-                {
-                    userEmail: values.userEmail,
-                    userPW: values.userPW,
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    withCredentials: true,
-                }
-            );
+            const result = await sessionAuth.handleLogin(values.userEmail, values.userPW);
             console.log('로그인:', result);
             message.info('로그인 성공');
-            console.log('세션 정보: ', result.data.session);
-            setSession(result.data.session);
+            setSession(result);
             history.goBack();
         } catch (error) {
             message.error('로그인 실패');
-            console.error('로그인 실패:', error);
-        } finally {
             setIsSubmitting(false);
         }
     };
+
+    useEffect(() => {
+        sessionAuth.checkSession(setSession);
+    });
     return (
         <div id="login-wrap">
             <div id="login-headline">로그인</div>

@@ -6,18 +6,13 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 
 function ProductPageComponent(props) {
-    console.log('productpage prop:', props);
+    const { session, setSession } = props;
+    const [form] = Form.useForm();
     const { productID } = useParams();
     const history = useHistory();
     const [product, setProduct] = useState(null);
-    const [owner, setOwner] = useState(null);
     const [showTextarea, setShowTextarea] = useState(false);
     const [ask, setAsk] = useState([]);
-
-    if (props.session === null) {
-        history.push('/login');
-        message.error('로그인이 필요합니다.', 3);
-    }
 
     useEffect(
         function () {
@@ -34,18 +29,12 @@ function ProductPageComponent(props) {
         },
         [productID]
     );
-    useEffect(function () {
-        getProduct();
-        if (props.session === null) {
-            setOwner(null);
-            console.log('owner VS customer:', owner);
-        } else {
-            setOwner(props.session);
-            console.log('owner VS customer:', owner);
-        }
-    }, []);
-
-    const handleButtonClick = () => {
+    if (session === null) {
+        setSession(null);
+        history.push('/login');
+        message.error('로그인이 필요합니다.', 3);
+    }
+    const answerToggleButton = () => {
         setShowTextarea((prevState) => !prevState);
     };
 
@@ -60,15 +49,52 @@ function ProductPageComponent(props) {
                 console.error(error);
             });
     };
-    const onSubmitAsk = async (values) => {
+    useEffect(function () {
+        getProduct();
+    }, []);
+
+    const onSubmitAsk = async (values, form) => {
         try {
-            const result = await axios.post('http://localhost:3006/ask/setAsk', {
+            await axios.post('http://localhost:3006/ask/setAsk', {
                 askText: values.askText,
                 productID: productID,
-                userID: props.session.userID,
+                userID: session.userID,
             });
-            console.log(result);
+            form.resetFields();
             const updatedResult = await axios.get(`http://localhost:3006/ask/getAsk/${productID}`);
+            const updatedAsk = updatedResult.data;
+            setAsk(updatedAsk);
+        } catch (error) {
+            console.log(error);
+            message.error(`에러가 발생했습니다. ${error.message}`);
+        }
+    };
+
+    const onDeleteAsk = async (askID) => {
+        try {
+            await axios.delete('http://localhost:3006/ask/delete', {
+                data: {
+                    askID: askID,
+                },
+            });
+            const updatedResult = await axios.get(`http://localhost:3006/ask/getAsk/${productID}`);
+            const updatedAsk = updatedResult.data;
+            setAsk(updatedAsk);
+        } catch (error) {
+            console.log(error);
+            message.error(`에러가 발생했습니다. ${error.message}`);
+        }
+    };
+
+    const onSubmitAnswer = async (values, form) => {
+        try {
+            await axios.post('http://localhost:3006/ask/setAsk', {
+                answerText: values.answerText,
+                productID: productID,
+                userID: session.userID,
+            });
+            form.resetFields();
+            const updatedResult = await axios.get(`http://localhost:3006/ask/getAnswer/${productID}`);
             const updatedAsk = updatedResult.data;
             setAsk(updatedAsk);
         } catch (error) {
@@ -144,23 +170,49 @@ function ProductPageComponent(props) {
                                     <span>{ask.userName}</span>
                                 </div>
                                 <div className="comment">{ask.askText}</div>
-                                <div>{dayjs(ask.askDate).format('YY-MM-DD')}</div>
-                                <Button className="owner-reply-toggle" onClick={handleButtonClick}>
-                                    {showTextarea ? '취소' : '답글'}
-                                </Button>
+                                {session.userID === ask.userID ? (
+                                    <Button
+                                        type="text"
+                                        className="comment-delete"
+                                        onClick={() => onDeleteAsk(ask.askID)}
+                                    >
+                                        x
+                                    </Button>
+                                ) : null}
+                                <div className="comment-date">{dayjs(ask.askDate).format('YY-MM-DD')}</div>
+                                {session.userID === product.userID || session.userID === ask.userID ? (
+                                    <Button className="owner-reply-toggle" onClick={answerToggleButton} size="small">
+                                        {showTextarea ? '취소' : '답글'}
+                                    </Button>
+                                ) : null}
+                                {showTextarea !== null ? (
+                                    <Form
+                                        form={form}
+                                        className="reply-wrap"
+                                        onFinish={(values) => onSubmitAnswer(values, form)}
+                                    >
+                                        <Form.Item name="answerText">
+                                            <Input.TextArea
+                                                placeholder="답글을 입력하세요"
+                                                autoSize={{ minRows: 3, maxRows: 5 }}
+                                            />
+                                        </Form.Item>
+                                        <Button className="customer-reply-btn" htmlType="submit">
+                                            댓글
+                                        </Button>
+                                    </Form>
+                                ) : null}
                             </div>
                         );
                     })}
 
-                    <Form onFinish={onSubmitAsk}>
-                        <Form.Item className="reply-area" name="askText">
+                    <Form form={form} className="reply-wrap" onFinish={(values) => onSubmitAsk(values, form)}>
+                        <Form.Item name="askText">
                             <Input.TextArea placeholder="질문을 입력하세요" autoSize={{ minRows: 3, maxRows: 5 }} />
                         </Form.Item>
-                        <Form.Item>
-                            <Button className="customer-reply-btn" htmlType="submit">
-                                댓글
-                            </Button>
-                        </Form.Item>
+                        <Button className="customer-reply-btn" htmlType="submit">
+                            댓글
+                        </Button>
                     </Form>
                 </div>
             </div>

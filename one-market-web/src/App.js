@@ -10,45 +10,13 @@ import ProductPageComponent from './product';
 import UploadPageComponent from './upload';
 import LoginPageComponent from './login';
 import SignupPageComponent from './signup';
-import axios from 'axios';
+import sessionAuth from './Session/sessionAuth';
 
 function App() {
     const [session, setSession] = useState(null);
 
     useEffect(() => {
-        const checkSession = async () => {
-            //쿠키에서 userID값만 가져오기
-            const cookies = document.cookie.split(';').map((cookie) => cookie.trim());
-            console.log(cookies);
-            let userID = null;
-            for (const cookie of cookies) {
-                if (cookie.startsWith('userID=')) {
-                    userID = cookie.substring('userID='.length);
-                    break;
-                }
-            }
-            await axios
-                .post(
-                    'http://localhost:3006/api/userData',
-                    { userID: userID },
-                    {
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        withCredentials: true,
-                    }
-                )
-                .then((result) => {
-                    setSession(result.data[0]);
-                    console.log('세션 접근', result.data[0]);
-                    console.log('app.js:', session);
-                })
-                .catch((error) => {
-                    setSession(null);
-                    console.error('세션 접근 에러', error);
-                });
-        };
-        checkSession();
+        sessionAuth.checkSession(setSession);
     }, []);
 
     return (

@@ -19,8 +19,9 @@ exports.uploadProducts = async (req, res) => {
 };
 
 exports.getProducts = async (req, res) => {
+    const { category } = req.query;
     await productDB
-        .getProducts()
+        .getProducts(category)
         .then((result) => {
             console.log('get products seccess!');
             res.status(200).json(result);

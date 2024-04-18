@@ -107,33 +107,15 @@
     margin-bottom: 10px;
 }
 
+.reply-arrow {
+    position: relative;
+    top: 20px;
+    left: -15px;
+}
+
 .owner-reply-toggle {
     margin-right: auto;
-}
-
-.owner-reply-arrow {
-    width: 30px;
-    height: auto;
-}
-
-.owner-reply {
-    margin-left: 60px;
-    display: flex;
-    align-items: center;
-}
-
-.owner-reply-btn {
-    margin-top: 10px;
-    margin-left: auto;
-}
-
-.customer-reply {
-    display: flex;
-    align-items: center;
-}
-
-.customer-reply-btn {
-    margin-left: auto;
+    margin-bottom: 10px;
 }
 
 .reply-wrap {

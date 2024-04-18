@@ -24,7 +24,7 @@ exports.getAsk = async (req, res) => {
 
 exports.deleteAsk = async (req, res) => {
     const { askID } = req.body;
-    console.log('server :', askID);
+    await askDB.deleteAllAnswer(askID);
     await askDB
         .deleteAsk(askID)
         .then((result) => {

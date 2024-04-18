@@ -7,54 +7,51 @@ import dayjs from 'dayjs';
 
 function ProductPageComponent(props) {
     const { session, setSession } = props;
-    const [form] = Form.useForm();
+    const [askForm] = Form.useForm();
+    const [answerForm] = Form.useForm();
     const { productID } = useParams();
     const history = useHistory();
     const [product, setProduct] = useState(null);
-    const [showTextarea, setShowTextarea] = useState(false);
     const [ask, setAsk] = useState([]);
+    const [answer, setAnswer] = useState([]);
 
-    useEffect(
-        function () {
-            const getAsk = async () => {
-                try {
-                    const result = await axios.get(`http://localhost:3006/ask/getAsk/${productID}`);
-                    const askData = result.data;
-                    setAsk(askData);
-                } catch (error) {
-                    console.log(error);
-                }
-            };
-            getAsk();
-        },
-        [productID]
-    );
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const productResult = await axios.get(`http://localhost:3006/product/${productID}`);
+                const productData = productResult.data;
+                setProduct(productData[0]);
+
+                const askResult = await axios.get(`http://localhost:3006/ask/getAsk/${productID}`);
+                const askData = askResult.data;
+                setAsk(askData);
+
+                const answerResult = await axios.get(`http://localhost:3006/answer/getAnswer/${productID}`);
+                const answerData = answerResult.data;
+                setAnswer(answerData);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchData();
+    }, [productID]);
     if (session === null) {
         setSession(null);
         history.push('/login');
         message.error('로그인이 필요합니다.', 3);
     }
-    const answerToggleButton = () => {
-        setShowTextarea((prevState) => !prevState);
-    };
 
-    const getProduct = async () => {
-        await axios
-            .get(`http://localhost:3006/product/${productID}`)
-            .then((result) => {
-                const product = result.data[0];
-                setProduct(product);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+    const toggleAnswerTextarea = (askID) => {
+        setAsk((prevAsk) =>
+            prevAsk.map((askItem) =>
+                askItem.askID === askID ? { ...askItem, showTextarea: !askItem.showTextarea } : askItem
+            )
+        );
     };
-    useEffect(function () {
-        getProduct();
-    }, []);
 
     const onSubmitAsk = async (values, form) => {
         try {
+            console.log('ASK!!!!');
             await axios.post('http://localhost:3006/ask/setAsk', {
                 askText: values.askText,
                 productID: productID,
@@ -62,7 +59,7 @@ function ProductPageComponent(props) {
             });
             form.resetFields();
             const updatedResult = await axios.get(`http://localhost:3006/ask/getAsk/${productID}`);
-            const updatedAsk = updatedResult.data;
+            const updatedAsk = updatedResult.data.map((ask) => ({ ...ask, showTextarea: false }));
             setAsk(updatedAsk);
         } catch (error) {
             console.log(error);
@@ -78,7 +75,7 @@ function ProductPageComponent(props) {
                 },
             });
             const updatedResult = await axios.get(`http://localhost:3006/ask/getAsk/${productID}`);
-            const updatedAsk = updatedResult.data;
+            const updatedAsk = updatedResult.data.map((ask) => ({ ...ask, showTextarea: false }));
             setAsk(updatedAsk);
         } catch (error) {
             console.log(error);
@@ -86,17 +83,37 @@ function ProductPageComponent(props) {
         }
     };
 
-    const onSubmitAnswer = async (values, form) => {
+    const onSubmitAnswer = async (values, form, askID) => {
         try {
-            await axios.post('http://localhost:3006/ask/setAsk', {
+            console.log('ANSWER!!!!');
+            await axios.post('http://localhost:3006/answer/setAnswer', {
                 answerText: values.answerText,
                 productID: productID,
                 userID: session.userID,
+                askID: askID,
             });
+            const updatedResult = await axios.get(`http://localhost:3006/answer/getAnswer/${productID}`);
+            const updatedAnswer = updatedResult.data;
+            setAnswer(updatedAnswer);
+            toggleAnswerTextarea(askID);
             form.resetFields();
-            const updatedResult = await axios.get(`http://localhost:3006/ask/getAnswer/${productID}`);
-            const updatedAsk = updatedResult.data;
-            setAsk(updatedAsk);
+        } catch (error) {
+            console.log(error);
+            message.error(`에러가 발생했습니다. ${error.message}`);
+        }
+    };
+
+    const onDeleteAnswer = async (answerID) => {
+        console.log(answerID);
+        try {
+            await axios.delete('http://localhost:3006/answer/delete', {
+                data: {
+                    answerID: answerID,
+                },
+            });
+            const updatedResult = await axios.get(`http://localhost:3006/answer/getAnswer/${productID}`);
+            const updatedAnswer = updatedResult.data;
+            setAnswer(updatedAnswer);
         } catch (error) {
             console.log(error);
             message.error(`에러가 발생했습니다. ${error.message}`);
@@ -111,7 +128,6 @@ function ProductPageComponent(props) {
             .post(`http://localhost:3006/product/purchase/${productID}`)
             .then((result) => {
                 message.info('상품 구매가 완료되었습니다.');
-                getProduct();
             })
             .catch((error) => {
                 message.error('상품 구매에 실패했습니다.');
@@ -122,7 +138,6 @@ function ProductPageComponent(props) {
             .post(`http://localhost:3006/product/purchaseCancel/${productID}`)
             .then((result) => {
                 message.info('상품 구매가 취소되었습니다.');
-                getProduct();
             })
             .catch((error) => {
                 message.error('상품 구매 취소에 실패했습니다.');
@@ -170,7 +185,7 @@ function ProductPageComponent(props) {
                                     <span>{ask.userName}</span>
                                 </div>
                                 <div className="comment">{ask.askText}</div>
-                                {session.userID === ask.userID ? (
+                                {session.userID === ask.userID || session.userID === product.userID ? (
                                     <Button
                                         type="text"
                                         className="comment-delete"
@@ -180,16 +195,45 @@ function ProductPageComponent(props) {
                                     </Button>
                                 ) : null}
                                 <div className="comment-date">{dayjs(ask.askDate).format('YY-MM-DD')}</div>
+
+                                {answer.map(function (answer, index) {
+                                    return answer.askID === ask.askID ? (
+                                        <div className="comment-list" key={index}>
+                                            <div className="reply-arrow">ㄴ</div>
+                                            <div className="comment-profile-box">
+                                                <img src="/images/avatar.png" alt="avatar" />
+                                                <span>{answer.userName}</span>
+                                            </div>
+                                            <div className="comment">{answer.answerText}</div>
+                                            {session.userID === answer.userID || session.userID === product.userID ? (
+                                                <Button
+                                                    type="text"
+                                                    className="comment-delete"
+                                                    onClick={() => onDeleteAnswer(answer.answerID)}
+                                                >
+                                                    x
+                                                </Button>
+                                            ) : null}
+                                            <div className="comment-date">
+                                                {dayjs(answer.answerDate).format('YY-MM-DD')}
+                                            </div>
+                                        </div>
+                                    ) : null;
+                                })}
                                 {session.userID === product.userID || session.userID === ask.userID ? (
-                                    <Button className="owner-reply-toggle" onClick={answerToggleButton} size="small">
-                                        {showTextarea ? '취소' : '답글'}
+                                    <Button
+                                        className="owner-reply-toggle"
+                                        onClick={() => toggleAnswerTextarea(ask.askID)}
+                                        size="small"
+                                    >
+                                        {ask.showTextarea ? '취소' : '답글'}
                                     </Button>
                                 ) : null}
-                                {showTextarea !== null ? (
+                                {ask.showTextarea ? (
                                     <Form
-                                        form={form}
+                                        form={answerForm}
                                         className="reply-wrap"
-                                        onFinish={(values) => onSubmitAnswer(values, form)}
+                                        onFinish={(values) => onSubmitAnswer(values, answerForm, ask.askID)}
                                     >
                                         <Form.Item name="answerText">
                                             <Input.TextArea
@@ -197,6 +241,7 @@ function ProductPageComponent(props) {
                                                 autoSize={{ minRows: 3, maxRows: 5 }}
                                             />
                                         </Form.Item>
+                                        {console.log(ask.askID)}
                                         <Button className="customer-reply-btn" htmlType="submit">
                                             댓글
                                         </Button>
@@ -205,8 +250,7 @@ function ProductPageComponent(props) {
                             </div>
                         );
                     })}
-
-                    <Form form={form} className="reply-wrap" onFinish={(values) => onSubmitAsk(values, form)}>
+                    <Form form={askForm} className="reply-wrap" onFinish={(values) => onSubmitAsk(values, askForm)}>
                         <Form.Item name="askText">
                             <Input.TextArea placeholder="질문을 입력하세요" autoSize={{ minRows: 3, maxRows: 5 }} />
                         </Form.Item>

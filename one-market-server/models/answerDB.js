@@ -1,13 +1,14 @@
 const db = require('../database/db');
 
-exports.setAsk = (data) => {
+exports.setAnswer = (data) => {
     return new Promise((resolve, reject) => {
         db.query(
-            `INSERT INTO ask (askText, productID, userID) values(?,?,?)`,
-            [data[0], data[1], data[2]],
+            `INSERT INTO answer (answerText, productID, userID, askID) values(?,?,?,?)`,
+            [data[0], data[1], data[2], data[3]],
             (error, result) => {
                 if (error) {
                     reject(error);
+                    console.log(error);
                 } else {
                     resolve(result);
                 }
@@ -16,10 +17,10 @@ exports.setAsk = (data) => {
     });
 };
 
-exports.getAsk = (productID) => {
+exports.getAnswer = (productID) => {
     return new Promise((resolve, reject) => {
         db.query(
-            `SELECT ask.*, user.userName FROM ask JOIN user ON ask.userID = user.userID WHERE ask.productID = ?`,
+            `SELECT answer.*, user.userName FROM answer JOIN user ON answer.userID = user.userID WHERE answer.productID = ?`,
             productID,
             (error, result) => {
                 if (error) {
@@ -32,21 +33,9 @@ exports.getAsk = (productID) => {
     });
 };
 
-exports.deleteAsk = (askID) => {
+exports.deleteAnswer = (answerID) => {
     return new Promise((resolve, reject) => {
-        db.query('DELETE FROM ask WHERE askID = ?', askID, (error, result) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(result);
-            }
-        });
-    });
-};
-
-exports.deleteAllAnswer = (askID) => {
-    return new Promise((resolve, reject) => {
-        db.query(`DELETE FROM answer WHERE askID = ?`, askID, (error, result) => {
+        db.query('DELETE FROM answer WHERE answerID = ?', answerID, (error, result) => {
             if (error) {
                 reject(error);
             } else {

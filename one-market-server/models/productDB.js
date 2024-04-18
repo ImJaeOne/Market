@@ -50,6 +50,22 @@ exports.getProductDetail = (productID) => {
     });
 };
 
+exports.searchProduct = (productName) => {
+    return new Promise((resolve, reject) => {
+        db.query(
+            `SELECT product.*, user.userName, user.userEmail FROM product INNER JOIN user ON product.userID = user.userID WHERE product.productName LIKE ?`,
+            [`%${productName}%`],
+            (error, result) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(result);
+                }
+            }
+        );
+    });
+};
+
 exports.purchaseProduct = (productID) => {
     return new Promise((resolve, reject) => {
         db.query(`UPDATE product SET productsoldout = 1 WHERE productID = ?`, productID, (error, result) => {

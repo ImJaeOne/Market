@@ -7,24 +7,30 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 
 function ProductsPageComponent(props) {
+    const { session, search, setSearch } = props;
     const history = useHistory();
     const [products, getProducts] = useState([]);
 
     useEffect(function () {
-        axios
-            .get('http://localhost:3006/product/getProducts')
-            .then(function (result) {
-                const products = result.data;
-                getProducts(products);
-                console.log(products);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        if (search) {
+            getProducts(search.products);
+            setSearch('');
+        } else {
+            axios
+                .get('http://localhost:3006/product/getProducts')
+                .then((result) => {
+                    const products = result.data;
+                    getProducts(products);
+                    console.log(products);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
     }, []);
 
     const toUploadPage = () => {
-        if (props.session === null) {
+        if (session === null) {
             history.push('/login');
             message.error('로그인이 필요합니다.');
         } else {
@@ -32,7 +38,6 @@ function ProductsPageComponent(props) {
         }
     };
     const categoryChange = (value) => {
-        console.log(`selected ${value}`);
         axios
             .get(`http://localhost:3006/product/getProducts?category=${value}`)
             .then(function (result) {
@@ -118,7 +123,6 @@ function ProductsPageComponent(props) {
                                 </div>
                                 <div className="product-contents">
                                     <span className="product-name">{product.productName}</span>
-
                                     <span className="product-price">{product.productPrice}</span>
                                     <div className="product-footer">
                                         <div className="product-seller">

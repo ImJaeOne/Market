@@ -46,6 +46,18 @@ exports.getProductDetail = async (req, res) => {
         });
 };
 
+exports.searchProduct = async (req, res) => {
+    const { productName } = req.body;
+    console.log(productName);
+    await productDB
+        .searchProduct(productName)
+        .then((result) => {
+            res.status(200).json(result);
+            console.log(result);
+        })
+        .catch((error) => res.status(500).json(error));
+};
+
 exports.purchaseProduct = async (req, res) => {
     const { productID } = req.params;
     await productDB

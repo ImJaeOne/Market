@@ -1,16 +1,15 @@
 import './index.css';
 import { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Button, message, Form, Divider, Input } from 'antd';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
 function ProductPageComponent(props) {
-    const { session, setSession } = props;
+    const { session } = props;
     const [askForm] = Form.useForm();
     const [answerForm] = Form.useForm();
     const { productID } = useParams();
-    const history = useHistory();
     const [product, setProduct] = useState(null);
     const [ask, setAsk] = useState([]);
     const [answer, setAnswer] = useState([]);
@@ -35,11 +34,6 @@ function ProductPageComponent(props) {
         };
         fetchData();
     }, [productID]);
-    if (session === null) {
-        setSession(null);
-        history.push('/login');
-        message.error('로그인이 필요합니다.', 3);
-    }
 
     const toggleAnswerTextarea = (askID) => {
         setAsk((prevAsk) =>
@@ -51,7 +45,6 @@ function ProductPageComponent(props) {
 
     const onSubmitAsk = async (values, form) => {
         try {
-            console.log('ASK!!!!');
             await axios.post('http://localhost:3006/ask/setAsk', {
                 askText: values.askText,
                 productID: productID,
@@ -63,7 +56,7 @@ function ProductPageComponent(props) {
             setAsk(updatedAsk);
         } catch (error) {
             console.log(error);
-            message.error(`에러가 발생했습니다. ${error.message}`);
+            message.error(`로그인이 필요합니다.`);
         }
     };
 
@@ -85,7 +78,6 @@ function ProductPageComponent(props) {
 
     const onSubmitAnswer = async (values, form, askID) => {
         try {
-            console.log('ANSWER!!!!');
             await axios.post('http://localhost:3006/answer/setAnswer', {
                 answerText: values.answerText,
                 productID: productID,

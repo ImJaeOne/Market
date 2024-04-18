@@ -2,7 +2,6 @@ import 'antd/dist/antd.css';
 import './App.css';
 import { useState, useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
-
 import HeaderComponent from './header';
 import MainPageComponent from './main';
 import ProductsPageComponent from './products';
@@ -14,6 +13,7 @@ import sessionAuth from './Session/sessionAuth';
 
 function App() {
     const [session, setSession] = useState(null);
+    const [search, setSearch] = useState(null);
 
     useEffect(() => {
         sessionAuth.checkSession(setSession);
@@ -21,14 +21,19 @@ function App() {
 
     return (
         <div>
-            <HeaderComponent session={session} setSession={setSession} />
+            <HeaderComponent session={session} setSession={setSession} setSearch={setSearch} />
             <section id="body">
                 <Switch>
                     <Route exact={true} path="/">
                         <MainPageComponent />
                     </Route>
                     <Route exact={true} path="/products">
-                        <ProductsPageComponent session={session} setSession={setSession} />
+                        <ProductsPageComponent
+                            session={session}
+                            setSession={setSession}
+                            search={search}
+                            setSearch={setSearch}
+                        />
                     </Route>
                     <Route exact={true} path="/product/:productID">
                         <ProductPageComponent session={session} setSession={setSession} />

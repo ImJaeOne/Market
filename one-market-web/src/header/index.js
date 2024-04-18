@@ -1,13 +1,30 @@
 import './index.css';
+
 import { Link, useHistory } from 'react-router-dom';
-import { Input, message } from 'antd';
+import { Input, message, Form } from 'antd';
 import sessionAuth from '../Session/sessionAuth';
+import axios from 'axios';
 
 function HeaderComponent(props) {
-    const { session, setSession } = props;
+    const { session, setSession, setSearch } = props;
     const history = useHistory();
     const { Search } = Input;
-    const onSearch = (value, _e, info) => console.log(info?.source, value);
+
+    const onSearch = (value, form) => {
+        axios
+            .post('http://localhost:3006/product/search', { productName: value })
+            .then((result) => {
+                const searchProductData = {
+                    products: result.data,
+                };
+                setSearch(searchProductData);
+                history.push('/products');
+            })
+            .catch((error) => {
+                console.log(error);
+                message.error('상품이 존재하지 않습니다.');
+            });
+    };
 
     const logout = async () => {
         try {
@@ -22,6 +39,7 @@ function HeaderComponent(props) {
     const prepare = () => {
         message.info('준비 중인 서비스입니다.');
     };
+
     return (
         <header id="header-wrap">
             <div id="header">
@@ -46,9 +64,11 @@ function HeaderComponent(props) {
                     </div>
                 </div>
                 <div id="right-header">
-                    <Search id="search" placeholder="물품이나 동네를 검색해보세요" onSearch={onSearch} />
+                    <Form>
+                        <Search id="search" placeholder="물품이나 동네를 검색해보세요" onSearch={onSearch} />
+                    </Form>
                     <div>
-                        {props.session !== null ? (
+                        {session !== null ? (
                             <div className="to-logout">
                                 <div className="to-login">{session.userName}님</div>
                                 <div

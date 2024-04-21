@@ -8,20 +8,11 @@ function SignupPageComponent() {
     const onSubmit = async (values) => {
         console.log(values);
         axios
-            .post(
-                'http://localhost:3006/api/signup',
-                {
-                    userEmail: values.userEmail,
-                    userPW: values.userPW,
-                    userName: values.userName,
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    withCredentials: true,
-                }
-            )
+            .post('http://localhost:3006/api/signup', {
+                userEmail: values.userEmail,
+                userPW: values.userPW,
+                userName: values.userName,
+            })
             .then((result) => {
                 console.log(result);
                 message.info(`회원가입 완료`);

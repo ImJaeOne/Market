@@ -22,10 +22,10 @@ exports.signup = async (req, res) => {
             return;
         }
         const hash = await textToHash(userPW);
-        const signup = await userDB.signUp([userEmail, hash, userName]);
+        await userDB.signUp([userEmail, hash, userName]);
         res.status(200).json('회원 가입 성공');
     } catch (error) {
-        res.status(500).json(error);
+        res.status(401).json('회원 가입 실페', error);
     }
 };
 
@@ -59,10 +59,6 @@ exports.loginCheck = async (req, res) => {
             if (await hashCompare(userPW, hashedPW)) {
                 isMatch = true;
                 req.session.userID = user.userID;
-                // req.session.userEmail = user.userEmail;
-                // req.session.userName = user.userName;
-                console.log('로그인 성공(세션) : ', req.session);
-                console.log('회원 정보 : ', user);
                 res.status(200).json({ session: req.session });
                 break;
             }
@@ -82,11 +78,9 @@ exports.logout = async (req, res) => {
     console.log('삭제 하기전 :', req.session);
     req.session.destroy(function (error) {
         if (error) {
-            res.status(500).json('로그아웃 에러(서버)', error);
+            res.status(401).json('로그아웃 실패', error);
         } else {
-            res.clearCookie('userID');
-            res.status(200).json('로그아웃 성공(서버)');
-            console.log('로그아웃 성공(서버)', req.session);
+            res.status(200).json('로그아웃 성공');
         }
     });
 };
@@ -99,16 +93,6 @@ exports.userData = async (req, res) => {
         const getUserData = await userDB.getUserData(userID);
         res.status(200).json(getUserData);
     } else {
-        res.status(401).json('유저 정보 받아올 수 없음(userID)');
-    }
-};
-
-exports.userDataEmail = async (req, res) => {
-    const { userEmail } = req.body;
-    if (userID) {
-        const getUser = await userDB.getUser(userEmail);
-        res.status(200).json(getUser);
-    } else {
-        res.stauts(401).json('유저 정보 받아올 수 없음(userEmail)');
+        res.status(401).json('유저 정보 받아올 수 없음');
     }
 };

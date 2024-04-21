@@ -5,9 +5,9 @@ exports.setAnswer = async (req, res) => {
     console.log(answerText, productID, userID, askID);
     try {
         await answerDB.setAnswer([answerText, productID, userID, askID]);
-        res.status(200).json('setAsk success!');
+        res.status(200).json('답글 등록 성공');
     } catch (error) {
-        res.status(500).json('setAsk failed...');
+        res.status(500).json('답글 등록 실패', error);
     }
 };
 
@@ -19,7 +19,7 @@ exports.getAnswer = async (req, res) => {
             res.status(200).json(result);
         })
         .catch((error) => {
-            res.status(500).json(error);
+            res.status(500).json('답글 불러오기 실패', error);
         });
 };
 

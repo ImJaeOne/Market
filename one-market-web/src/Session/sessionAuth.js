@@ -17,15 +17,7 @@ const checkSession = async (setSession) => {
     const sessionID = getCookie('sessionID');
     if (sessionID !== null) {
         await axios
-            .post(
-                'http://localhost:3006/api/userData',
-                { userID: sessionID },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            )
+            .post('http://localhost:3006/api/userData', { userID: sessionID })
             .then((result) => {
                 setSession(result.data[0]);
                 console.log('세션 접근', result.data[0]);

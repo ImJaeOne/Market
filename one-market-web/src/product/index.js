@@ -27,6 +27,7 @@ function ProductPageComponent(props) {
 
                 const answerResult = await axios.get(`http://localhost:3006/answer/getAnswer/${productID}`);
                 const answerData = answerResult.data;
+                console.log(answerData);
                 setAnswer(answerData);
             } catch (error) {
                 console.log(error);

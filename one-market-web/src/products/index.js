@@ -11,23 +11,26 @@ function ProductsPageComponent(props) {
     const history = useHistory();
     const [products, getProducts] = useState([]);
 
-    useEffect(function () {
-        if (search) {
-            getProducts(search.products);
-            setSearch('');
-        } else {
-            axios
-                .get('http://localhost:3006/product/getProducts')
-                .then((result) => {
-                    const products = result.data;
-                    getProducts(products);
-                    console.log(products);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        }
-    }, []);
+    useEffect(
+        function () {
+            if (search) {
+                getProducts(search.products);
+                setSearch('');
+            } else {
+                axios
+                    .get('http://localhost:3006/product/getProducts')
+                    .then((result) => {
+                        const products = result.data;
+                        console.log(products);
+                        getProducts(products);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+        },
+        [session, search, setSearch]
+    );
 
     const toUploadPage = () => {
         if (session === null) {

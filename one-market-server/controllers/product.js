@@ -14,7 +14,7 @@ exports.uploadProducts = async (req, res) => {
         res.status(200).json('상품 업로드 성공');
     } catch (error) {
         console.log('상품 업로드 에러', error);
-        res.status(500).json(`상품 업로드 에러`);
+        res.status(500).json('상품 업로드 에러');
     }
 };
 
@@ -23,12 +23,10 @@ exports.getProducts = async (req, res) => {
     await productDB
         .getProducts(category)
         .then((result) => {
-            console.log('get products seccess!');
             res.status(200).json(result);
         })
         .catch((error) => {
-            console.error('get products failed... : ', error);
-            res.status(500).json(error);
+            res.status(500).json('상품을 받아올 수 없음', error);
         });
 };
 
@@ -37,12 +35,10 @@ exports.getProductDetail = async (req, res) => {
     await productDB
         .getProductDetail(productID)
         .then((result) => {
-            console.log('get productDetail success!');
             res.status(200).json(result);
         })
         .catch((error) => {
-            console.error('get productDetail failed... : ', error);
-            res.status(500).json(error);
+            res.status(500).json('상품을 받아올 수 없음', error);
         });
 };
 
@@ -55,7 +51,7 @@ exports.searchProduct = async (req, res) => {
             res.status(200).json(result);
             console.log(result);
         })
-        .catch((error) => res.status(500).json(error));
+        .catch((error) => res.status(500).json('검색된 상품이 존재하지 않음', error));
 };
 
 exports.purchaseProduct = async (req, res) => {

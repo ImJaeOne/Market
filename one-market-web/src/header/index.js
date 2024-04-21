@@ -1,5 +1,4 @@
 import './index.css';
-
 import { Link, useHistory } from 'react-router-dom';
 import { Input, message, Form } from 'antd';
 import sessionAuth from '../Session/sessionAuth';

@@ -29,9 +29,9 @@ exports.deleteAnswer = async (req, res) => {
     await answerDB
         .deleteAnswer(answerID)
         .then((result) => {
-            res.status(200).json(result);
+            res.status(200).json('답글 삭제 성공');
         })
         .catch((error) => {
-            res.status(500).json(error);
+            res.status(500).json('답글 삭제 실패',error);
         });
 };

@@ -1,0 +1,13 @@
+{
+    "name": "one-market",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "concurrently \"npm run server\" \"npm run client\"",
+        "server": "cd one-market-server/routes && nodemon server.js",
+        "client": "cd one-market-web && npm start"
+    },
+    "author": "",
+    "license": "ISC"
+}

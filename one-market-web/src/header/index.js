@@ -1,4 +1,5 @@
 import './index.css';
+import React, { useCallback } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Input, message, Form } from 'antd';
 import sessionAuth from '../Session/sessionAuth';
@@ -9,7 +10,8 @@ function HeaderComponent(props) {
     const history = useHistory();
     const { Search } = Input;
 
-    const onSearch = (value, form) => {
+    console.log('헤더 session:', session);
+    const onSearch = useCallback((value, form) => {
         axios
             .post('http://localhost:3006/product/search', { productName: value })
             .then((result) => {
@@ -23,7 +25,7 @@ function HeaderComponent(props) {
                 console.log(error);
                 message.error('상품이 존재하지 않습니다.');
             });
-    };
+    }, []);
 
     const logout = async () => {
         try {
@@ -33,6 +35,10 @@ function HeaderComponent(props) {
         } catch (error) {
             console.error('로그아웃 에러 : ', error);
         }
+    };
+
+    const mypage = () => {
+        history.push('/mypage');
     };
 
     const prepare = () => {
@@ -69,7 +75,9 @@ function HeaderComponent(props) {
                     <div>
                         {session !== null ? (
                             <div className="to-logout">
-                                <div className="to-login">{session.userName}님</div>
+                                <div className="to-login" onClick={mypage}>
+                                    {session.userName}님
+                                </div>
                                 <div
                                     className="to-login"
                                     onClick={() => {

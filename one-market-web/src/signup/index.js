@@ -6,7 +6,6 @@ import axios from 'axios';
 function SignupPageComponent() {
     const history = useHistory();
     const onSubmit = async (values) => {
-        console.log(values);
         axios
             .post('http://localhost:3006/api/signup', {
                 userEmail: values.userEmail,

@@ -15,20 +15,20 @@ const removeCookie = (name) => {
 
 const checkSession = async (setSession) => {
     const sessionID = getCookie('sessionID');
-    if (sessionID !== null) {
-        await axios
-            .post('http://localhost:3006/api/userData', { userID: sessionID })
-            .then((result) => {
-                setSession(result.data[0]);
-                console.log('세션 접근', result.data[0]);
-            })
-            .catch((error) => {
-                setSession(null);
-                console.error('세션 접근 에러', error);
-            });
-    } else {
-        setSession(null);
-    }
+        if (sessionID !== null) {
+            await axios
+                .post('http://localhost:3006/api/userData', { userID: sessionID })
+                .then((result) => {
+                    setSession(result.data[0]);
+                    console.log('세션 접근', result.data[0]);
+                })
+                .catch((error) => {
+                    setSession(null);
+                    console.error('세션 접근 에러', error);
+                });
+        } else {
+            setSession(null);
+        }
 };
 
 const handleLogin = async (userEmail, userPW) => {
@@ -45,7 +45,7 @@ const handleLogin = async (userEmail, userPW) => {
                 },
             }
         );
-        setCookie('sessionID', result.data.session.userID, { expires: 1 }); // 세션 쿠키 설정
+        setCookie('sessionID', result.data.session.userID, { expires: 1, path: '/', sameSite: 'strict' }); // 세션 쿠키 설정
         console.log('세션 정보: ', result.data.session);
         return result.data.session;
     } catch (error) {

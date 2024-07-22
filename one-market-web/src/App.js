@@ -16,7 +16,8 @@ function App() {
     const [search, setSearch] = useState(null);
 
     useEffect(() => {
-        sessionAuth.checkSession(setSession);
+        const fetchSession = async () => { sessionAuth.checkSession(setSession); }
+        fetchSession();
     }, []);
 
     return (

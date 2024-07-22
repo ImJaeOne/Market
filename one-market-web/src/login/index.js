@@ -4,6 +4,10 @@ import { useHistory } from 'react-router-dom';
 import { Form, Input, Button, Divider, message } from 'antd';
 import sessionAuth from '../Session/sessionAuth';
 
+//handleLogin에서도 setSession
+//checkSession에서도 setSession
+//둘이 충돌
+
 function LoginPageComponent(prop) {
     const { setSession } = prop;
     const history = useHistory();

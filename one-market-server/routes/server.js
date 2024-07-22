@@ -21,7 +21,7 @@ app.use(
             domain: 'localhost',
             path: '/',
             maxAge: 24 * 6 * 60 * 10000,
-            sameSite: 'strict',
+            sameSite: 'lax',
             httpOnly: true,
             secure: false, //https일 경우 true로 설정
         },

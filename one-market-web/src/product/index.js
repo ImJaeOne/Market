@@ -1,6 +1,6 @@
 import './index.css';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { Button, message, Form, Divider, Input } from 'antd';
 import axios from 'axios';
 import dayjs from 'dayjs';
@@ -13,6 +13,8 @@ function ProductPageComponent(props) {
     const [product, setProduct] = useState(null);
     const [ask, setAsk] = useState([]);
     const [answer, setAnswer] = useState([]);
+    const history = useHistory();
+    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -27,14 +29,22 @@ function ProductPageComponent(props) {
 
                 const answerResult = await axios.get(`http://localhost:3006/answer/getAnswer/${productID}`);
                 const answerData = answerResult.data;
-                console.log(answerData);
                 setAnswer(answerData);
             } catch (error) {
-                console.log(error);
+                message.error('로그인이 필요합니다.');
             }
         };
-        fetchData();
-    }, [productID]);
+        console.log('상품 상세 session:', session);
+        if (session) {
+            fetchData();
+        } else {
+            history.push('/login');
+            message.error('로그인이 필요합니다.');
+        }
+        
+    }, [productID, session, history]);
+
+    
 
     const toggleAnswerTextarea = (askID) => {
         setAsk((prevAsk) =>
@@ -178,7 +188,7 @@ function ProductPageComponent(props) {
                                     <span>{ask.userName}</span>
                                 </div>
                                 <div className="comment">{ask.askText}</div>
-                                {session.userID === ask.userID || session.userID === product.userID ? (
+                                {session && (session.userID === ask.userID || session.userID === product.userID) && (
                                     <Button
                                         type="text"
                                         className="comment-delete"
@@ -186,7 +196,7 @@ function ProductPageComponent(props) {
                                     >
                                         x
                                     </Button>
-                                ) : null}
+                                )}
                                 <div className="comment-date">{dayjs(ask.askDate).format('YY-MM-DD')}</div>
 
                                 {answer.map(function (answer, index) {
@@ -198,22 +208,24 @@ function ProductPageComponent(props) {
                                                 <span>{answer.userName}</span>
                                             </div>
                                             <div className="comment">{answer.answerText}</div>
-                                            {session.userID === answer.userID || session.userID === product.userID ? (
-                                                <Button
-                                                    type="text"
-                                                    className="comment-delete"
-                                                    onClick={() => onDeleteAnswer(answer.answerID)}
-                                                >
-                                                    x
-                                                </Button>
-                                            ) : null}
+                                            {session &&
+                                                (session.userID === answer.userID ||
+                                                    session.userID === product.userID) && (
+                                                    <Button
+                                                        type="text"
+                                                        className="comment-delete"
+                                                        onClick={() => onDeleteAnswer(answer.answerID)}
+                                                    >
+                                                        x
+                                                    </Button>
+                                                )}
                                             <div className="comment-date">
                                                 {dayjs(answer.answerDate).format('YY-MM-DD')}
                                             </div>
                                         </div>
                                     ) : null;
                                 })}
-                                {session.userID === product.userID || session.userID === ask.userID ? (
+                                {session && (session.userID === product.userID || session.userID === ask.userID) && (
                                     <Button
                                         className="owner-reply-toggle"
                                         onClick={() => toggleAnswerTextarea(ask.askID)}
@@ -221,7 +233,7 @@ function ProductPageComponent(props) {
                                     >
                                         {ask.showTextarea ? '취소' : '답글'}
                                     </Button>
-                                ) : null}
+                                )}
                                 {ask.showTextarea ? (
                                     <Form
                                         form={answerForm}

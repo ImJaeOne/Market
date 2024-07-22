@@ -11,17 +11,17 @@ function ProductsPageComponent(props) {
     const history = useHistory();
     const [products, getProducts] = useState([]);
 
+    console.log('상품 목록 session:',session);
+
     useEffect(
         function () {
             if (search) {
                 getProducts(search.products);
-                setSearch('');
             } else {
                 axios
                     .get('http://localhost:3006/product/getProducts')
                     .then((result) => {
                         const products = result.data;
-                        console.log(products);
                         getProducts(products);
                     })
                     .catch((error) => {
@@ -31,7 +31,6 @@ function ProductsPageComponent(props) {
         },
         [session, search, setSearch]
     );
-
     const toUploadPage = () => {
         if (session === null) {
             history.push('/login');

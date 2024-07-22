@@ -7,6 +7,8 @@ import axios from 'axios';
 function UploadPageComponent(props) {
     const [imageUrl, setImageUrl] = useState(null);
     const history = useHistory();
+    console.log('상품 업로드 session:', props.session);
+
     if (props.session === null) {
         history.push('/login');
         message.error('로그인이 필요합니다');

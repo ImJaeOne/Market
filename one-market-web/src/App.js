@@ -1,7 +1,7 @@
 import 'antd/dist/antd.css';
 import './App.css';
 import { useState, useEffect } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import HeaderComponent from './header';
 import MainPageComponent from './main';
 import ProductsPageComponent from './products';
@@ -30,53 +30,63 @@ function App() {
     }, []);
 
     return (
-        <div>
-            <HeaderComponent session={session} setSession={setSession} setSearch={setSearch} />
-            <section id="body">
-                <Switch>
-                    <Route exact={true} path="/">
-                        <MainPageComponent />
-                    </Route>
-                    <Route exact={true} path="/products">
-                        <ProductsPageComponent
-                            session={session}
-                            setSession={setSession}
-                            search={search}
-                            setSearch={setSearch}
-                        />
-                    </Route>
-                    <Route exact={true} path="/product/:productID">
-                        <ProductPageComponent
-                            session={session}
-                            setSession={setSession}
-                            sessionLoading={sessionLoading}
-                        />
-                    </Route>
-                    <Route exact path="/upload">
-                        <UploadPageComponent session={session} setSession={setSession} sessionLoading={ sessionLoading} />
-                    </Route>
-                    <Route exact={true} path="/login">
-                        <LoginPageComponent session={session} setSession={setSession} />
-                    </Route>
-                    <Route exact={true} path="/signup">
-                        <SignupPageComponent />
-                    </Route>
-                    <Route exact={true} path="/mypage">
-                        <MyPageComponent/>
-                    </Route>
-                </Switch>
-            </section>
-            <footer id="footer">
-                <div id="info">
-                    <div>
-                        <b>제작</b> 임재원
+        <BrowserRouter>
+            <div>
+                <HeaderComponent session={session} setSession={setSession} setSearch={setSearch} />
+                <section id="body">
+                    <Switch>
+                        <Route exact={true} path="/">
+                            <MainPageComponent />
+                        </Route>
+                        <Route exact={true} path="/products">
+                            <ProductsPageComponent
+                                session={session}
+                                setSession={setSession}
+                                search={search}
+                                setSearch={setSearch}
+                            />
+                        </Route>
+                        <Route exact={true} path="/product/:productID">
+                            <ProductPageComponent
+                                session={session}
+                                setSession={setSession}
+                                sessionLoading={sessionLoading}
+                            />
+                        </Route>
+                        <Route exact={true} path="/upload">
+                            <UploadPageComponent
+                                session={session}
+                                setSession={setSession}
+                                sessionLoading={sessionLoading}
+                            />
+                        </Route>
+                        <Route exact={true} path="/login">
+                            <LoginPageComponent session={session} setSession={setSession} />
+                        </Route>
+                        <Route exact={true} path="/signup">
+                            <SignupPageComponent />
+                        </Route>
+                        <Route path="/mypage">
+                            <MyPageComponent
+                                session={session}
+                                setSession={setSession}
+                                sessionLoading={sessionLoading}
+                            />
+                        </Route>
+                    </Switch>
+                </section>
+                <footer id="footer">
+                    <div id="info">
+                        <div>
+                            <b>제작</b> 임재원
+                        </div>
+                        <div>
+                            <b>문의</b> dlawi0108@naver.com
+                        </div>
                     </div>
-                    <div>
-                        <b>문의</b> dlawi0108@naver.com
-                    </div>
-                </div>
-            </footer>
-        </div>
+                </footer>
+            </div>
+        </BrowserRouter>
     );
 }
 

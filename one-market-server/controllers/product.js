@@ -44,7 +44,6 @@ exports.getProductDetail = async (req, res) => {
 
 exports.searchProduct = async (req, res) => {
     const { productName } = req.body;
-    console.log(productName);
     await productDB
         .searchProduct(productName)
         .then((result) => {
@@ -53,6 +52,26 @@ exports.searchProduct = async (req, res) => {
         })
         .catch((error) => res.status(500).json('검색된 상품이 존재하지 않음', error));
 };
+
+exports.myProducts = async (req, res) => {
+    await productDB
+        .searchMyProduct()
+        .then((result) => {
+            res.status(200).json(result);
+        })
+        .catch((error) => {
+            res.status(500).json('상품을 받아올 수 없음', error);
+        });
+};
+// exports.myProducts = async (req, res) => {
+//     await productDB
+//         .searchMyProduct(productName)
+//         .then((result) => {
+//             res.status(200).json(result);
+//             console.log(result);
+//         })
+//         .catch((error) => { res.status(500).json('등록된 상품이 없음', error); console.log(error) });
+// };
 
 exports.purchaseProduct = async (req, res) => {
     const { productID } = req.params;

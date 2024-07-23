@@ -11,8 +11,6 @@ function ProductsPageComponent(props) {
     const history = useHistory();
     const [products, getProducts] = useState([]);
 
-    console.log('상품 목록 session:',session);
-
     useEffect(
         function () {
             if (search) {

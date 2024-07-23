@@ -14,7 +14,6 @@ function ProductPageComponent(props) {
     const [ask, setAsk] = useState([]);
     const [answer, setAnswer] = useState([]);
     const history = useHistory();
-    
 
     useEffect(() => {
         const fetchData = async () => {

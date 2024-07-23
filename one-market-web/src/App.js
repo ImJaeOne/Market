@@ -9,15 +9,24 @@ import ProductPageComponent from './product';
 import UploadPageComponent from './upload';
 import LoginPageComponent from './login';
 import SignupPageComponent from './signup';
+import MyPageComponent from './mypage';
 import sessionAuth from './Session/sessionAuth';
 
 function App() {
     const [session, setSession] = useState(null);
     const [search, setSearch] = useState(null);
+    const [sessionLoading, setSessionLoading] = useState(true);
 
     useEffect(() => {
-        const fetchSession = async () => { sessionAuth.checkSession(setSession); }
-        fetchSession();
+        const loadSession = async () => {
+            try {
+                await sessionAuth.checkSession(setSession);
+            } finally {
+                setSessionLoading(false);
+            }
+        };
+
+        loadSession();
     }, []);
 
     return (
@@ -37,16 +46,23 @@ function App() {
                         />
                     </Route>
                     <Route exact={true} path="/product/:productID">
-                        <ProductPageComponent session={session} setSession={setSession} />
+                        <ProductPageComponent
+                            session={session}
+                            setSession={setSession}
+                            sessionLoading={sessionLoading}
+                        />
                     </Route>
                     <Route exact path="/upload">
-                        <UploadPageComponent session={session} setSession={setSession} />
+                        <UploadPageComponent session={session} setSession={setSession} sessionLoading={ sessionLoading} />
                     </Route>
                     <Route exact={true} path="/login">
                         <LoginPageComponent session={session} setSession={setSession} />
                     </Route>
                     <Route exact={true} path="/signup">
                         <SignupPageComponent />
+                    </Route>
+                    <Route exact={true} path="/mypage">
+                        <MyPageComponent/>
                     </Route>
                 </Switch>
             </section>

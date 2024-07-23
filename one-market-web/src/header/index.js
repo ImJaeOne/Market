@@ -9,8 +9,7 @@ function HeaderComponent(props) {
     const { session, setSession, setSearch } = props;
     const history = useHistory();
     const { Search } = Input;
-
-    console.log('헤더 session:', session);
+    
     const onSearch = useCallback((value, form) => {
         axios
             .post('http://localhost:3006/product/search', { productName: value })
@@ -25,7 +24,7 @@ function HeaderComponent(props) {
                 console.log(error);
                 message.error('상품이 존재하지 않습니다.');
             });
-    }, []);
+    }, [history, setSearch]);
 
     const logout = async () => {
         try {
@@ -80,9 +79,7 @@ function HeaderComponent(props) {
                                 </div>
                                 <div
                                     className="to-login"
-                                    onClick={() => {
-                                        logout();
-                                    }}
+                                    onClick={logout}
                                 >
                                     로그아웃
                                 </div>

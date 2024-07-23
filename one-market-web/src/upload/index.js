@@ -1,17 +1,26 @@
 import './index.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Form, Upload, Divider, Input, InputNumber, Button, message, Select } from 'antd';
+import { Form, Upload, Divider, Input, InputNumber, Button, message, Select,Spin } from 'antd';
 import axios from 'axios';
 
 function UploadPageComponent(props) {
+    const{session, sessionLoading} = props
     const [imageUrl, setImageUrl] = useState(null);
     const history = useHistory();
-    console.log('상품 업로드 session:', props.session);
 
-    if (props.session === null) {
-        history.push('/login');
-        message.error('로그인이 필요합니다');
+    useEffect(() => {
+        if (session) {
+            return
+        } else if (!sessionLoading) {
+            history.push('/login');
+            message.error('로그인이 필요합니다');
+        }
+    },[session, sessionLoading, history])
+    
+
+    if (props.sessionLoading) {
+        return <Spin tip="세션 정보를 불러오는 중입니다..." />;
     }
     const onSubmit = (values) => {
         console.log(values);

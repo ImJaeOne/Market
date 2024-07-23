@@ -15,7 +15,7 @@ const removeCookie = (name) => {
 
 const checkSession = async (setSession) => {
     const sessionID = getCookie('sessionID');
-        if (sessionID !== null) {
+        if (sessionID) {
             await axios
                 .post('http://localhost:3006/api/userData', { userID: sessionID })
                 .then((result) => {
@@ -32,6 +32,7 @@ const checkSession = async (setSession) => {
 };
 
 const handleLogin = async (userEmail, userPW) => {
+    let res = [];
     try {
         const result = await axios.post(
             'http://localhost:3006/api/loginCheck',
@@ -46,8 +47,20 @@ const handleLogin = async (userEmail, userPW) => {
             }
         );
         setCookie('sessionID', result.data.session.userID, { expires: 1, path: '/', sameSite: 'strict' }); // 세션 쿠키 설정
-        console.log('세션 정보: ', result.data.session);
-        return result.data.session;
+        await axios
+            .post('http://localhost:3006/api/userData', { userID: result.data.session.userID })
+            .then((result) => {
+                console.log('세션 접근', result.data[0])
+                res = result.data[0]
+                return (res);
+            })
+            .catch((error) => {
+                removeCookie('sessionID'); 
+                res = null;
+                return res;
+                // console.error('세션 접근 에러', error);
+            });
+        return res;
     } catch (error) {
         console.error('로그인 실패:', error);
         throw new Error('로그인에 실패했습니다.');

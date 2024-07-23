@@ -4,14 +4,10 @@ import { useHistory } from 'react-router-dom';
 import { Form, Input, Button, Divider, message } from 'antd';
 import sessionAuth from '../Session/sessionAuth';
 
-//handleLogin에서도 setSession
-//checkSession에서도 setSession
-//둘이 충돌
 
 function LoginPageComponent(prop) {
     const { setSession } = prop;
     const history = useHistory();
-    //중복 제출 방지
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const loginSubmit = async (values) => {
@@ -32,7 +28,7 @@ function LoginPageComponent(prop) {
 
     useEffect(() => {
         sessionAuth.checkSession(setSession);
-    });
+    },[]);
     return (
         <div id="login-wrap">
             <div id="login-headline">로그인</div>

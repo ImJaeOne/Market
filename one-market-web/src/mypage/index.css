@@ -1,0 +1,33 @@
+#mypage{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#mypage-headline {
+    margin-top: 30px;
+    font-size: 32px;
+    font-weight: bolder;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+#mypage-user{
+    width: 100%;
+    position: relative;
+}
+
+.mypage-update{
+    position:absolute;
+    right: 0px;
+}
+
+.mypage-user-wrap{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    font-weight: bold;
+}

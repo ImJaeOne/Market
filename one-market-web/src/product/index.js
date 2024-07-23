@@ -1,12 +1,12 @@
 import './index.css';
 import { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { Button, message, Form, Divider, Input } from 'antd';
+import { Button, message, Form, Divider, Input, Spin } from 'antd';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
 function ProductPageComponent(props) {
-    const { session } = props;
+    const { session, sessionLoading } = props;
     const [askForm] = Form.useForm();
     const [answerForm] = Form.useForm();
     const { productID } = useParams();
@@ -34,17 +34,17 @@ function ProductPageComponent(props) {
                 message.error('로그인이 필요합니다.');
             }
         };
-        console.log('상품 상세 session:', session);
         if (session) {
             fetchData();
-        } else {
+        } else if (!sessionLoading) {
             history.push('/login');
             message.error('로그인이 필요합니다.');
         }
-        
-    }, [productID, session, history]);
+    }, [productID, session, sessionLoading, history]);
 
-    
+    if (sessionLoading) {
+        return <Spin tip="세션 정보를 불러오는 중입니다..." />;
+    }
 
     const toggleAnswerTextarea = (askID) => {
         setAsk((prevAsk) =>

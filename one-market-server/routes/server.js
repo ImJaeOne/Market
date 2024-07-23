@@ -27,6 +27,7 @@ app.use(
         },
     })
 );
+
 app.use(
     cors({
         origin: 'http://localhost:3005',

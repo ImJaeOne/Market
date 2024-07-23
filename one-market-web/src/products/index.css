@@ -6,8 +6,9 @@
 
 #product-headline {
     margin-top: 30px;
-    margin-bottom: 30px;
     font-size: 32px;
+    font-weight: bolder;
+    margin-bottom: 30px;
     text-align: center;
 }
 
@@ -95,8 +96,4 @@
 .product-date {
     font-size: 12px;
     color: rgb(136, 136, 136);
-}
-
-#product-headline {
-    margin-top: 8px;
 }

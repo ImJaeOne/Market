@@ -1,12 +1,14 @@
 import './index.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { Button, message, Form, Divider, Input, Spin } from 'antd';
+import { SessionContext } from '../Session/SessionProvider';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
 function ProductPageComponent(props) {
-    const { session, sessionLoading } = props;
+    const { state } = useContext(SessionContext);
+    const { session, sessionLoading } = state;
     const [askForm] = Form.useForm();
     const [answerForm] = Form.useForm();
     const { productID } = useParams();

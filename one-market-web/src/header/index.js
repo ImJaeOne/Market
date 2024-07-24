@@ -1,12 +1,16 @@
 import './index.css';
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Input, message, Form } from 'antd';
 import sessionAuth from '../Session/sessionAuth';
 import axios from 'axios';
+import { SessionContext } from '../Session/SessionProvider'
+import { CLEAR_SESSION } from '../Session/SessionReducer';
 
 function HeaderComponent(props) {
-    const { session, setSession, setSearch } = props;
+    const { setSearch } = props;
+    const { dispatch, state } = useContext(SessionContext);
+    const { session } = state;
     const history = useHistory();
     const { Search } = Input;
     
@@ -28,9 +32,8 @@ function HeaderComponent(props) {
 
     const logout = async () => {
         try {
-            await sessionAuth.handleLogout();
-            message.info('로그아웃 성공');
-            setSession(null);
+            await sessionAuth.handleLogout(dispatch);
+            dispatch({type: CLEAR_SESSION})
         } catch (error) {
             console.error('로그아웃 에러 : ', error);
         }

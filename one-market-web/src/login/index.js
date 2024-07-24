@@ -1,12 +1,13 @@
 import './index.css';
-import { useEffect, useState } from 'react';
+import { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Form, Input, Button, Divider, message } from 'antd';
 import sessionAuth from '../Session/sessionAuth';
+import { SessionContext } from '../Session/SessionProvider';
 
 
-function LoginPageComponent(prop) {
-    const { setSession } = prop;
+function LoginPageComponent() {
+    const { dispatch } = useContext(SessionContext);
     const history = useHistory();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -15,10 +16,8 @@ function LoginPageComponent(prop) {
         setIsSubmitting(true);
 
         try {
-            const result = await sessionAuth.handleLogin(values.userEmail, values.userPW);
-            console.log('로그인:', result);
+            await sessionAuth.handleLogin(values.userEmail, values.userPW, dispatch);
             message.info('로그인 성공');
-            setSession(result);
             history.goBack();
         } catch (error) {
             message.error('로그인 실패');
@@ -26,9 +25,7 @@ function LoginPageComponent(prop) {
         }
     };
 
-    useEffect(() => {
-        sessionAuth.checkSession(setSession);
-    },[]);
+    
     return (
         <div id="login-wrap">
             <div id="login-headline">로그인</div>

@@ -66,10 +66,10 @@ exports.searchProduct = (productName) => {
     });
 };
 
-exports.searchMyProduct = (category) => {
+exports.searchMyProduct = (userID) => {
     return new Promise((resolve, reject) => {
         db.query(
-            `SELECT product.*, user.userName, user.userEmail FROM product INNER JOIN user ON product.userID = user.userID WHERE product.userID = 6`,
+            `SELECT product.*, user.userName, user.userEmail FROM product INNER JOIN user ON product.userID = user.userID WHERE product.userID = ?`,userID,
             (error, result) => {
                 if (error) {
                     reject(error);
@@ -80,18 +80,6 @@ exports.searchMyProduct = (category) => {
         );
     });
 };
-// exports.searchMyProduct = () => {
-//     return new Promise((resolve, reject) => {
-//         db.query(`SELECT * FROM product WHERE userID = 6`, (error, result) => {
-//             if (error) {
-//                 reject(error);
-//             } else {
-//                 resolve(result);
-//                 console.log('resolve!');
-//             }
-//         });
-//     });
-// };
 
 exports.purchaseProduct = (productID) => {
     return new Promise((resolve, reject) => {

@@ -15,8 +15,8 @@ exports.getUser = (userEmail) => {
 exports.signUp = (data) => {
     return new Promise((resolve, reject) => {
         db.query(
-            `INSERT INTO user (userEmail, userPW, userName) values(?,?,?)`,
-            [data[0], data[1], data[2]],
+            `INSERT INTO user (userEmail, userPW, userName, userPhone) values(?,?,?,?)`,
+            [data[0], data[1], data[2], data[3]],
             (error, result) => {
                 if (error) {
                     reject(error);

@@ -14,7 +14,7 @@ const textToHash = async (text) => {
 
 //회원 가입
 exports.signup = async (req, res) => {
-    const { userEmail, userPW, userName } = req.body;
+    const { userEmail, userPW, userName, userPhone } = req.body;
     try {
         const getUser = await userDB.getUser(userEmail);
         if (getUser.length) {
@@ -22,10 +22,10 @@ exports.signup = async (req, res) => {
             return;
         }
         const hash = await textToHash(userPW);
-        await userDB.signUp([userEmail, hash, userName]);
+        await userDB.signUp([userEmail, hash, userName, userPhone]);
         res.status(200).json('회원 가입 성공');
     } catch (error) {
-        res.status(401).json('회원 가입 실페', error);
+        res.status(401).json('회원 가입 실ㅠㅐ', error);
     }
 };
 

@@ -54,8 +54,10 @@ exports.searchProduct = async (req, res) => {
 };
 
 exports.myProducts = async (req, res) => {
+    const userID = req.params.userID;
+    console.log(userID);
     await productDB
-        .searchMyProduct()
+        .searchMyProduct(userID)
         .then((result) => {
             res.status(200).json(result);
         })
@@ -63,15 +65,6 @@ exports.myProducts = async (req, res) => {
             res.status(500).json('상품을 받아올 수 없음', error);
         });
 };
-// exports.myProducts = async (req, res) => {
-//     await productDB
-//         .searchMyProduct(productName)
-//         .then((result) => {
-//             res.status(200).json(result);
-//             console.log(result);
-//         })
-//         .catch((error) => { res.status(500).json('등록된 상품이 없음', error); console.log(error) });
-// };
 
 exports.purchaseProduct = async (req, res) => {
     const { productID } = req.params;

@@ -1,13 +1,16 @@
 import './index.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { Button, Form, Select, message } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
+import { SessionContext } from '../Session/SessionProvider';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
 function ProductsPageComponent(props) {
-    const { session, search, setSearch } = props;
+    const { search } = props;
+    const { state } = useContext(SessionContext);
+    const { session } = state;
     const history = useHistory();
     const [products, getProducts] = useState([]);
 
@@ -27,7 +30,7 @@ function ProductsPageComponent(props) {
                     });
             }
         },
-        [session, search, setSearch]
+        [ search ]
     );
     const toUploadPage = () => {
         if (session === null) {

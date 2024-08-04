@@ -39,3 +39,53 @@ exports.getUserData = (userID) => {
         });
     });
 };
+
+// exports.editUserInfo = async (userData) => {
+//     return new Promise((resolve, reject) => {
+//         const { userID, userPhone, userLocation, hashedPW } = userData;
+// const hashedPW = await textToHash(userPW);
+//         const fields = [];
+//         const values = [];
+
+//         if (userPhone !== undefined) {
+//             fields.push('userPhone = ?');
+//             values.push(userPhone);
+//         }
+
+//         if (userLocation !== undefined) {
+//             fields.push('userLocation = ?');
+//             values.push(userLocation);
+//         }
+
+//         if (userPW !== undefined) {
+//             fields.push('userPW = ?');
+//             values.push(userPW);
+//         }
+
+//         if (fields.length === 0) {
+//             return reject(new Error('업데이트할 데이터가 없습니다.'));
+//         }
+
+//         const sql = `UPDATE user SET ${fields.join(', ')} WHERE userID = ?`;
+//         values.push(userID);
+
+//         db.query(sql, values, (error, result) => {
+//             if (error) {
+//                 reject(error);
+//             } else {
+//                 resolve(result);
+//             }
+//         });
+//     });
+// };
+exports.editUserInfo = ({ userID, sql, values }) => {
+    return new Promise((resolve, reject) => {
+        db.query(sql, values, (error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+};

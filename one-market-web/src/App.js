@@ -10,8 +10,8 @@ import UploadPageComponent from './upload';
 import LoginPageComponent from './login';
 import SignupPageComponent from './signup';
 import MyPageComponent from './mypage';
+import UserInfoEditComponent from './edit-u-info';
 import SessionProvider from './Session/SessionProvider';
-import UserInfoEdit from './edit-u-info';
 
 function App() {
     const [search, setSearch] = useState(null);
@@ -45,7 +45,7 @@ function App() {
                                 <MyPageComponent />
                             </Route>
                             <Route path='/update_info'>
-                                <UserInfoEdit/>
+                                <UserInfoEditComponent/>
                             </Route>
                         </Switch>
                     </section>

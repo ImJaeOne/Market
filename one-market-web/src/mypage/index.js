@@ -13,7 +13,7 @@ export const MyPageContext = createContext({
     myPageNum: [],
     myProducts: [],
     myWishes: [],
-    myReply: []
+    myReply: [],
 });
 
 const initialState = {
@@ -24,7 +24,7 @@ const initialState = {
     },
     myProducts: [],
     myWishes: [],
-    myReply: []
+    myReply: [],
 };
 
 export const MyProducts = 'MyProducts';
@@ -72,55 +72,63 @@ const MyPageComponent = () => {
     const { state } = useContext(SessionContext);
     const { session, sessionLoading } = state;
 
+    console.log(session);
+
     const value = useMemo(
         () => ({ myPageNum, myPageDispatch, myProducts, myWishes, myReply }),
         [myPageNum, myPageDispatch, myProducts, myWishes, myReply]
     );
 
     useEffect(() => {
-        if (session && session.userID) {
-            axios
-                .all([
-                    axios.get(`http://localhost:3006/product/myProducts/${session.userID}`),
-                    axios.get(`http://localhost:3006/product/myWish/${session.userID}`),
-                    axios.get(`http://localhost:3006/product/myReply/${session.userID}`),
-                ])
-                .then(
-                    axios.spread((productsResult, wishResult, replyResult) => {
-                        const products = productsResult.data;
-                        const wishes = wishResult.data;
-                        const reply = replyResult.data;
+        if (!sessionLoading) {
+            if (session && session.userID) {
+                axios
+                    .all([
+                        axios.get(`http://localhost:3006/product/myProducts/${session.userID}`),
+                        axios.get(`http://localhost:3006/product/myWish/${session.userID}`),
+                        axios.get(`http://localhost:3006/product/myReply/${session.userID}`),
+                    ])
+                    .then(
+                        axios.spread((productsResult, wishResult, replyResult) => {
+                            const products = productsResult.data;
+                            const wishes = wishResult.data;
+                            const reply = replyResult.data;
 
-                        myPageDispatch({
-                            type: MyProducts,
-                            myProductsNum: products.length,
-                            myProducts: products,
-                        });
+                            myPageDispatch({
+                                type: MyProducts,
+                                myProductsNum: products.length,
+                                myProducts: products,
+                            });
 
-                        myPageDispatch({
-                            type: MyWish,
-                            myWishNum: wishes.length,
-                            myWishes: wishes,
-                        });
+                            myPageDispatch({
+                                type: MyWish,
+                                myWishNum: wishes.length,
+                                myWishes: wishes,
+                            });
 
-                        myPageDispatch({
-                            type: MyReply,
-                            myReplyNum: reply.length,
-                            myReply: reply,
-                        });
-                    })
-                )
-                .catch((error) => {
-                    console.error(error);
-                });
-        } else if (!sessionLoading) {
-            history.push('/login');
-            message.error('로그인이 필요합니다.');
+                            myPageDispatch({
+                                type: MyReply,
+                                myReplyNum: reply.length,
+                                myReply: reply,
+                            });
+                        })
+                    )
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            } else {
+                history.push('/login');
+                message.error('로그인이 필요합니다.');
+            }
         }
     }, [session, sessionLoading, history, myPageDispatch]);
 
     if (sessionLoading) {
         return <Spin tip="세션 정보를 불러오는 중입니다..." />;
+    }
+
+    if (!session) {
+        return 
     }
 
     return (
@@ -140,7 +148,7 @@ const MyPageComponent = () => {
                         </div>
                         <div className="mypage-location">
                             <div className="mypage-icategory">지역</div>
-                            경상남도 진주시
+                            {session.userLocation ? session.userLocation : '비공개'}
                         </div>
                     </div>
                 </div>

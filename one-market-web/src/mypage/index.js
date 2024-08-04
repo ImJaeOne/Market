@@ -1,79 +1,124 @@
 import './index.css';
 import { useEffect, useReducer, createContext, useMemo, useContext } from 'react';
 import { Link, NavLink, Route, useHistory, Redirect } from 'react-router-dom';
-import { Divider,message, Spin } from 'antd';
+import { Divider, message, Spin } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { SessionContext } from '../Session/SessionProvider';
 import MyPageProductComponent from './product';
 import MyPageWishComponent from './wish';
 import MyPageReplyComponent from './reply';
+import axios from 'axios';
 
 export const MyPageContext = createContext({
-        myPageNum:[]
-})
-    
+    myPageNum: [],
+    myProducts: [],
+    myWishes: [],
+    myReply: []
+});
+
 const initialState = {
     myPageNum: {
         myProductsNum: 0,
         myWishNum: 0,
-        myReplyNum: 0
-        }
-}
+        myReplyNum: 0,
+    },
+    myProducts: [],
+    myWishes: [],
+    myReply: []
+};
 
 export const MyProducts = 'MyProducts';
 export const MyWish = 'MyWish';
 export const MyReply = 'MyReply';
-    
+
 const reducer = (state, action) => {
     switch (action.type) {
         case MyProducts:
-            {return {
+            return {
                 ...state,
                 myPageNum: {
                     ...state.myPageNum,
-                    myProductsNum: action.myProductsNum
-                }
-            }}
+                    myProductsNum: action.myProductsNum,
+                },
+                myProducts: action.myProducts,
+            };
         case MyWish:
-            {return {
+            return {
                 ...state,
                 myPageNum: {
                     ...state.myPageNum,
-                    myWishNum: action.myWishNum
-                }
-            }}
+                    myWishNum: action.myWishNum,
+                },
+                myWishes: action.myWishes,
+            };
         case MyReply:
-            {return {
+            return {
                 ...state,
                 myPageNum: {
                     ...state.myPageNum,
-                    myReplyNum: action.MyReplyNum
-                }
-            }
-            }
+                    myReplyNum: action.myReplyNum,
+                },
+                myReply: action.myReply,
+            };
         default:
             return state;
     }
-}
+};
 
 const MyPageComponent = () => {
     const history = useHistory();
     const [myPageState, myPageDispatch] = useReducer(reducer, initialState);
-    const { myPageNum } = myPageState;
+    const { myPageNum, myProducts, myWishes, myReply } = myPageState;
     const { state } = useContext(SessionContext);
     const { session, sessionLoading } = state;
 
-    const value = useMemo(()=>({myPageNum,myPageDispatch}),[myPageNum])
+    const value = useMemo(
+        () => ({ myPageNum, myPageDispatch, myProducts, myWishes, myReply }),
+        [myPageNum, myPageDispatch, myProducts, myWishes, myReply]
+    );
 
     useEffect(() => {
-        if (session) {
-            return;
+        if (session && session.userID) {
+            axios
+                .all([
+                    axios.get(`http://localhost:3006/product/myProducts/${session.userID}`),
+                    axios.get(`http://localhost:3006/product/myWish/${session.userID}`),
+                    axios.get(`http://localhost:3006/product/myReply/${session.userID}`),
+                ])
+                .then(
+                    axios.spread((productsResult, wishResult, replyResult) => {
+                        const products = productsResult.data;
+                        const wishes = wishResult.data;
+                        const reply = replyResult.data;
+
+                        myPageDispatch({
+                            type: MyProducts,
+                            myProductsNum: products.length,
+                            myProducts: products,
+                        });
+
+                        myPageDispatch({
+                            type: MyWish,
+                            myWishNum: wishes.length,
+                            myWishes: wishes,
+                        });
+
+                        myPageDispatch({
+                            type: MyReply,
+                            myReplyNum: reply.length,
+                            myReply: reply,
+                        });
+                    })
+                )
+                .catch((error) => {
+                    console.error(error);
+                });
         } else if (!sessionLoading) {
             history.push('/login');
             message.error('로그인이 필요합니다.');
         }
-    }, [session, sessionLoading, history]);
-    
+    }, [session, sessionLoading, history, myPageDispatch]);
+
     if (sessionLoading) {
         return <Spin tip="세션 정보를 불러오는 중입니다..." />;
     }

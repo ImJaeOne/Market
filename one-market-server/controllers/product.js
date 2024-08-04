@@ -55,9 +55,20 @@ exports.searchProduct = async (req, res) => {
 
 exports.myProducts = async (req, res) => {
     const userID = req.params.userID;
-    console.log(userID);
     await productDB
         .searchMyProduct(userID)
+        .then((result) => {
+            res.status(200).json(result);
+        })
+        .catch((error) => {
+            res.status(500).json('상품을 받아올 수 없음', error);
+        });
+};
+
+exports.myWish = async (req, res) => {
+    const userID = req.params.userID;
+    await productDB
+        .searchMyWish(userID)
         .then((result) => {
             res.status(200).json(result);
         })
@@ -85,11 +96,11 @@ exports.purchaseCancelProduct = async (req, res) => {
     await productDB
         .purchaseCancel(productID)
         .then((result) => {
-            console.log('purchase success!');
+            console.log('purchaseCancel success!');
             res.status(200).json({ result: true });
         })
         .catch((error) => {
-            console.error('purchase failed... : ', error);
+            console.error('purchaseCancel failed... : ', error);
             res.status(500).json(error);
         });
 };
@@ -102,4 +113,74 @@ exports.uploadImage = async (req, res) => {
     } catch (error) {
         console.log('이미지 업로드 에러:', error);
     }
+};
+
+exports.getWishNum = async (req, res) => {
+    const productID = req.params.productID;
+    await productDB
+        .getWishNum(productID)
+        .then((result) => {
+            res.status(200).json(result[0]);
+        })
+        .catch((error) => {
+            res.status(500).json(error);
+        });
+};
+
+exports.getWish = async (req, res) => {
+    const productID = req.params.productID;
+    const userID = req.query.userID;
+    await productDB
+        .getWish(productID, userID)
+        .then((result) => {
+            console.log(result);
+            res.status(200).json(result);
+        })
+        .catch((error) => {
+            res.status(500).json(error);
+        });
+};
+
+exports.setWish = async (req, res) => {
+    const productID = req.params.productID;
+    const userID = req.body.userID;
+    await productDB
+        .getWish(productID, userID)
+        .then((result) => {
+            if (result.length === 0) {
+                productDB
+                    .setWish(productID, userID)
+                    .then((result) => {
+                        res.status(200).json(result);
+                    })
+                    .catch((error) => {
+                        res.status(500).json(error);
+                    });
+            } else {
+                productDB
+                    .delWish(productID, userID)
+                    .then((result) => {
+                        res.status(200).json(result);
+                    })
+                    .catch((error) => {
+                        res.status(500).json(error);
+                    });
+            }
+        })
+        .catch((error) => {
+            res.status(500).json(error);
+        });
+};
+
+exports.myReply = async (req, res) => {
+    const userID = req.params.userID;
+    console.log('myReply:', userID);
+    await productDB
+        .searchMyReply(userID)
+        .then((result) => {
+            res.status(200).json(result);
+        })
+        .catch((error) => {
+            res.status(500).json('댓글을 받아올 수 없음', error);
+        });
 };

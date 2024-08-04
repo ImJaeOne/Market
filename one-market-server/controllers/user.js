@@ -25,7 +25,7 @@ exports.signup = async (req, res) => {
         await userDB.signUp([userEmail, hash, userName, userPhone]);
         res.status(200).json('회원 가입 성공');
     } catch (error) {
-        res.status(401).json('회원 가입 실ㅠㅐ', error);
+        res.status(401).json('회원 가입 실패', error);
     }
 };
 

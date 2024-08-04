@@ -11,6 +11,7 @@ import LoginPageComponent from './login';
 import SignupPageComponent from './signup';
 import MyPageComponent from './mypage';
 import SessionProvider from './Session/SessionProvider';
+import UserInfoEdit from './edit-u-info';
 
 function App() {
     const [search, setSearch] = useState(null);
@@ -42,6 +43,9 @@ function App() {
                             </Route>
                             <Route path="/mypage">
                                 <MyPageComponent />
+                            </Route>
+                            <Route path='/update_info'>
+                                <UserInfoEdit/>
                             </Route>
                         </Switch>
                     </section>

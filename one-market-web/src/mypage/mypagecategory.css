@@ -5,3 +5,75 @@
 .content-num{
     color: rgb(247, 47, 51);
 }
+
+.no-product-message{
+    font-size: 20px;
+    margin: 40px 0 60px 0;
+    color: #cfd0d1;
+}
+
+#reply-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.reply-card {
+    display: flex;
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.reply-product-info {
+    display: flex;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+.reply-product-img-wrap{
+    flex: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 180px;
+}
+.reply-product-img {
+    margin: 10px;
+    max-height: 80%;
+    height: auto;
+}
+
+.reply-product-details {
+    flex: 7;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;
+}
+.reply-product-details-label{
+    font-size: 20px;
+    margin-right: 10px;
+    color: #888
+}
+.reply-product-name {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.reply-content {
+    margin-top: 30px;
+    font-size: 20px;
+}
+
+.reply-footer {
+    margin-top: 10px;
+    text-align: right;
+    font-size: 0.8em;
+    color: #888;
+}
+
+.reply-date {
+    font-size: 15px;
+    color: #999;
+}

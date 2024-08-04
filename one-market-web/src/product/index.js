@@ -1,12 +1,13 @@
 import './index.css';
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { Button, message, Form, Divider, Input, Spin } from 'antd';
+import { Button, message, Form, Divider, Input, Spin, Badge } from 'antd';
+import { HeartOutlined, HeartTwoTone } from '@ant-design/icons';
 import { SessionContext } from '../Session/SessionProvider';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
-function ProductPageComponent(props) {
+function ProductPageComponent() {
     const { state } = useContext(SessionContext);
     const { session, sessionLoading } = state;
     const [askForm] = Form.useForm();
@@ -15,6 +16,8 @@ function ProductPageComponent(props) {
     const [product, setProduct] = useState(null);
     const [ask, setAsk] = useState([]);
     const [answer, setAnswer] = useState([]);
+    const [wishNum, setWishNum] = useState(0);
+    const [wish, setWish] = useState(false);
     const history = useHistory();
 
     useEffect(() => {
@@ -31,6 +34,20 @@ function ProductPageComponent(props) {
                 const answerResult = await axios.get(`http://localhost:3006/answer/getAnswer/${productID}`);
                 const answerData = answerResult.data;
                 setAnswer(answerData);
+
+                const wishNum = await axios.get(`http://localhost:3006/product/wishNum/${productID}`);
+                const wishNumData = wishNum.data.wishCount;
+                setWishNum(wishNumData);
+
+                const wish = await axios.get(`http://localhost:3006/product/wish/${productID}`, {
+                    params: { userID:session.userID },
+                });
+                const wishData = wish.data;
+                if (wishData.length === 0) {
+                    setWish(false);
+                } else {
+                    setWish(true);
+                }
             } catch (error) {
                 message.error('로그인이 필요합니다.');
             }
@@ -102,13 +119,11 @@ function ProductPageComponent(props) {
             toggleAnswerTextarea(askID);
             form.resetFields();
         } catch (error) {
-            console.log(error);
             message.error(`에러가 발생했습니다. ${error.message}`);
         }
     };
 
     const onDeleteAnswer = async (answerID) => {
-        console.log(answerID);
         try {
             await axios.delete('http://localhost:3006/answer/delete', {
                 data: {
@@ -119,7 +134,6 @@ function ProductPageComponent(props) {
             const updatedAnswer = updatedResult.data;
             setAnswer(updatedAnswer);
         } catch (error) {
-            console.log(error);
             message.error(`에러가 발생했습니다. ${error.message}`);
         }
     };
@@ -131,20 +145,42 @@ function ProductPageComponent(props) {
         await axios
             .post(`http://localhost:3006/product/purchase/${productID}`)
             .then((result) => {
-                message.info('상품 구매가 완료되었습니다.');
+                message.info('판매 상태가 변경되었습니다.');
             })
             .catch((error) => {
-                message.error('상품 구매에 실패했습니다.');
+                message.error('판매 상태 변경에 실패했습니다.');
             });
     };
     const onClickPurchaseCancel = async () => {
         await axios
             .post(`http://localhost:3006/product/purchaseCancel/${productID}`)
             .then((result) => {
-                message.info('상품 구매가 취소되었습니다.');
+                message.info('판매 상태가 변경되었습니다.');
             })
             .catch((error) => {
-                message.error('상품 구매 취소에 실패했습니다.');
+                message.error('판매 상태 변경에 실패했습니다.');
+            });
+    };
+    const onClickWish = async () => {
+        await axios
+            .post(`http://localhost:3006/product/setWish/${productID}`, { userID: session.userID })
+            .then((result) => {
+                setWish(true);
+                setWishNum((prevWishNum) => prevWishNum + 1);
+            })
+            .catch((error) => {
+                message.error('다시 시도해주세요');
+            });
+    };
+    const onClickWishCancel = async () => {
+        await axios
+            .post(`http://localhost:3006/product/setWish/${productID}`, { userID: session.userID })
+            .then((result) => {
+                setWish(false);
+                setWishNum((prevWishNum) => prevWishNum - 1);
+            })
+            .catch((error) => {
+                message.error('다시 시도해주세요');
             });
     };
 
@@ -159,7 +195,21 @@ function ProductPageComponent(props) {
                     <span>{product.userName}</span>
                 </div>
                 <div id="contents-box">
-                    <div id="name">{product.productName}</div>
+                    <div id="name">
+                        {product.productName}
+                        <Badge count={wishNum}>
+                            <Button
+                                icon={
+                                    wish ? (
+                                        <HeartTwoTone size="large" twoToneColor="red" />
+                                    ) : (
+                                        <HeartOutlined size="large" style={{ color: 'red' }} />
+                                    )
+                                }
+                                onClick={wish ? onClickWishCancel : onClickWish}
+                            />
+                        </Badge>
+                    </div>
                     <div id="price">{product.productPrice}</div>
                     <div id="createdAt">{dayjs(product.productUploadDate).format('YYYY-MM-DD')}</div>
                     <Button
@@ -169,7 +219,7 @@ function ProductPageComponent(props) {
                         danger
                         onClick={product.productsoldout === 1 ? onClickPurchaseCancel : onClickPurchase}
                     >
-                        {product.productsoldout === 1 ? '구매 취소' : '구매하기'}
+                        {product.productsoldout === 1 ? '판매 완료' : '판매'}
                     </Button>
                     <pre id="description">{product.productDescription} </pre>
                 </div>
@@ -217,7 +267,7 @@ function ProductPageComponent(props) {
                                                         className="comment-delete"
                                                         onClick={() => onDeleteAnswer(answer.answerID)}
                                                     >
-                                                        x
+                                                        삭제
                                                     </Button>
                                                 )}
                                             <div className="comment-date">

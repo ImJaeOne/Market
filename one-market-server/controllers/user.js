@@ -59,6 +59,8 @@ exports.loginCheck = async (req, res) => {
         let isMatch = false;
         for (const user of getUser) {
             const hashedPW = Buffer.from(user.userPW).toString();
+            const h = await bcrypt.hash(userPW, 10);
+            console.log(h);
             if (await hashCompare(userPW, hashedPW)) {
                 isMatch = true;
                 req.session.userID = user.userID;

@@ -334,7 +334,7 @@
 import './index.css';
 import { useState, useEffect, useContext } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { Button, message, Form, Divider, Input, Spin, Badge } from 'antd';
+import { Button, message, Form, Divider, Input, Spin, Badge, Avatar } from 'antd';
 import { HeartOutlined, HeartTwoTone } from '@ant-design/icons';
 import { SessionContext } from '../Session/SessionProvider';
 import axios from 'axios';
@@ -500,7 +500,7 @@ function ProductPageComponent() {
                     <img src={`http://localhost:3006/uploads/${product.productImgUrl}`} alt="product-img" />
                 </div>
                 <div id="profile-box">
-                    <img src="/images/avatar.png" alt="avatar" />
+                    <Avatar className="product-avatar">{product.userName.slice(1)}</Avatar>
                     <span>{product.userName}</span>
                 </div>
                 <div id="contents-box">

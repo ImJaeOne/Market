@@ -5,7 +5,6 @@ import { Form, Input, Button, Divider, message } from 'antd';
 import sessionAuth from '../Session/sessionAuth';
 import { SessionContext } from '../Session/SessionProvider';
 
-
 function LoginPageComponent() {
     const { dispatch } = useContext(SessionContext);
     const history = useHistory();
@@ -25,7 +24,6 @@ function LoginPageComponent() {
         }
     };
 
-    
     return (
         <div id="login-wrap">
             <div id="login-headline">로그인</div>

@@ -1,0 +1,31 @@
+#edit-u-info-wrap{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#edit-u-info-headline {
+    margin-top: 30px;
+    font-size: 32px;
+    font-weight: bolder;
+    margin-bottom: 30px;
+}
+
+.edit-u-info-label{
+    font-size: 25px;
+}
+
+.edit-u-info-c{
+    margin-top: 10px;
+    font-size: 20px;
+    padding: 0 100px;
+    
+}
+
+.edit-u-info-t{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 400px;
+}

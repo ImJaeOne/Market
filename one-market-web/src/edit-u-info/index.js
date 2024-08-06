@@ -4,8 +4,7 @@ import { EditOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { SessionContext } from '../Session/SessionProvider';
-
-const { Option } = Select;
+import './index.css';
 
 const UpdateUserInfoComponent = () => {
     const history = useHistory();
@@ -15,7 +14,7 @@ const UpdateUserInfoComponent = () => {
 
     const [isEditingPhone, setIsEditingPhone] = useState(false);
     const [isEditingPassword, setIsEditingPassword] = useState(false);
-    const [isEditingRegion, setIsEditingRegion] = useState(false);
+    const [isEditingLocation, setIsEditingLocation] = useState(false);
 
     useEffect(() => {
         if (!sessionLoading && !session) {
@@ -30,9 +29,9 @@ const UpdateUserInfoComponent = () => {
         try {
             const response = await axios.post('http://localhost:3006/api/editUserInfo', {
                 userID: session.userID,
-                userPhone: isEditingPhone ? values.userPhone : session.userPhone,
-                userLocation: isEditingRegion ? values.userLocation : session.userLocation,
-                userPW: isEditingPassword ? values.password : session.userPW,
+                userPhone: isEditingPhone ? values.userPhone : null,
+                userLocation: isEditingLocation ? values.userLocation : null,
+                userPW: isEditingPassword ? values.password : null,
             });
             if (response.status === 200) {
                 message.success('회원정보가 성공적으로 수정되었습니다.');
@@ -41,13 +40,13 @@ const UpdateUserInfoComponent = () => {
                     payload: {
                         ...session,
                         userPhone: isEditingPhone ? values.userPhone : session.userPhone,
-                        userLocation: isEditingRegion ? values.userLocation : session.userLocation,
-                        password: isEditingPassword ? values.password : session.password,
+                        userLocation: isEditingLocation ? values.userLocation : session.userLocation,
+                        userPW: isEditingPassword ? values.password : session.userPW,
                     },
                 });
                 setIsEditingPhone(false);
                 setIsEditingPassword(false);
-                setIsEditingRegion(false);
+                setIsEditingLocation(false);
             } else {
                 message.error('회원정보 수정에 실패했습니다.');
             }
@@ -67,99 +66,189 @@ const UpdateUserInfoComponent = () => {
         return null;
     }
 
+    const option = [
+        {
+            value: '서울',
+            label: '서울',
+        },
+        {
+            value: '부산',
+            label: '부산',
+        },
+        {
+            value: '대구',
+            label: '대구',
+        },
+        {
+            value: '인천',
+            label: '인천',
+        },
+        {
+            value: '광주',
+            label: '광주',
+        },
+        {
+            value: '대전',
+            label: '대전',
+        },
+        {
+            value: '울산',
+            label: '울산',
+        },
+        {
+            value: '세종',
+            label: '세종',
+        },
+        {
+            value: '경기',
+            label: '경기',
+        },
+        {
+            value: '강원',
+            label: '강원',
+        },
+        {
+            value: '충북',
+            label: '충북',
+        },
+        {
+            value: '충남',
+            label: '충남',
+        },
+        {
+            value: '전북',
+            label: '전북',
+        },
+        {
+            value: '전남',
+            label: '전남',
+        },
+        {
+            value: '경북',
+            label: '경북',
+        },
+        {
+            value: '경남',
+            label: '경남',
+        },
+        {
+            value: '제주',
+            label: '제주',
+        },
+    ];
+
     return (
-        <div style={{ maxWidth: '400px', margin: '0 auto', padding: '20px' }}>
-            <h2>회원정보 수정</h2>
+        <div id="edit-u-info-wrap">
+            <h1 id="edit-u-info-headline">회원정보 수정</h1>
             <Form
                 layout="vertical"
                 onFinish={onFinish}
                 initialValues={{
                     userPhone: session.userPhone,
-                    userRegion: session.userRegion,
+                    userLocation: session.userLocation,
                 }}
             >
-                <Form.Item label="전화번호">
+                <Form.Item label={<div className="edit-u-info-label">전화번호</div>} className="edit-u-info-c">
                     {isEditingPhone ? (
                         <Form.Item
                             name="userPhone"
-                            rules={[{ required: true, message: '전화번호를 입력해주세요.' }]}
-                            noStyle
+                            rules={[
+                                { required: true, message: '전화번호를 입력해주세요.' },
+                                {
+                                    pattern: /^010-\d{4}-\d{4}$/,
+                                    message: '전화번호는 010-1234-5678 형식으로 입력해주세요',
+                                },
+                            ]}
                         >
-                            <Input />
+                            <div className="edit-u-info-t">
+                                <Input />
+                                <Button
+                                    type="link"
+                                    onClick={() => setIsEditingPhone(!isEditingPhone)}
+                                    icon={<EditOutlined />}
+                                >
+                                    수정
+                                </Button>
+                            </div>
                         </Form.Item>
                     ) : (
-                        <div>
+                        <div className="edit-u-info-t">
                             {session.userPhone}
-                            <Button type="link" onClick={() => setIsEditingPhone(true)} icon={<EditOutlined />}>
+                            <Button
+                                type="link"
+                                onClick={() => setIsEditingPhone(!isEditingPhone)}
+                                icon={<EditOutlined />}
+                            >
                                 수정
                             </Button>
                         </div>
                     )}
                 </Form.Item>
 
-                <Form.Item label="비밀번호">
+                <Form.Item label={<div className="edit-u-info-label">비밀번호</div>} className="edit-u-info-c">
                     {isEditingPassword ? (
                         <Form.Item
                             name="password"
-                            rules={[{ required: true, message: '비밀번호를 입력해주세요.' }]}
-                            noStyle
+                            rules={[
+                                { required: true, message: '비밀번호를 입력해주세요.' },
+                                {
+                                    pattern: /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,15}$/,
+                                    message: '영어와 숫자를 혼합하여 6자 이상 15자 이하로 입력해주세요',
+                                },
+                            ]}
                         >
-                            <Input.Password />
+                            <div className="edit-u-info-t">
+                                <Input.Password />
+                                <Button
+                                    type="link"
+                                    onClick={() => setIsEditingPassword(!isEditingPassword)}
+                                    icon={<EditOutlined />}
+                                >
+                                    수정
+                                </Button>
+                            </div>
                         </Form.Item>
                     ) : (
-                        <div>
+                        <div className="edit-u-info-t">
                             ********
-                            <Button type="link" onClick={() => setIsEditingPassword(true)} icon={<EditOutlined />}>
+                            <Button
+                                type="link"
+                                onClick={() => setIsEditingPassword(!isEditingPassword)}
+                                icon={<EditOutlined />}
+                            >
                                 수정
                             </Button>
                         </div>
                     )}
                 </Form.Item>
 
-                <Form.Item label="지역">
-                    {isEditingRegion ? (
+                <Form.Item label={<div className="edit-u-info-label">지역</div>} className="edit-u-info-c">
+                    <div className="edit-u-info-t">
                         <Form.Item
                             name="userLocation"
-                            rules={[{ required: true, message: '지역을 선택해주세요.' }]}
-                            noStyle
+                            rules={[{ required: isEditingLocation, message: '지역을 선택해주세요.' }]}
                         >
-                            <Select>
-                                <Option value="서울">서울</Option>
-                                <Option value="부산">부산</Option>
-                                <Option value="대구">대구</Option>
-                                <Option value="인천">인천</Option>
-                                <Option value="광주">광주</Option>
-                                <Option value="대전">대전</Option>
-                                <Option value="울산">울산</Option>
-                                <Option value="세종">세종</Option>
-                                <Option value="경기">경기</Option>
-                                <Option value="강원">강원</Option>
-                                <Option value="충북">충북</Option>
-                                <Option value="충남">충남</Option>
-                                <Option value="전북">전북</Option>
-                                <Option value="전남">전남</Option>
-                                <Option value="경북">경북</Option>
-                                <Option value="경남">경남</Option>
-                                <Option value="제주">제주</Option>
-                            </Select>
+                            <Select options={option} disabled={!isEditingLocation} placeholder="지역을 선택해주세요" />
                         </Form.Item>
-                    ) : (
-                        <div>
-                            {session.userRegion}
-                            <Button type="link" onClick={() => setIsEditingRegion(true)} icon={<EditOutlined />}>
-                                수정
-                            </Button>
-                        </div>
-                    )}
-                </Form.Item>
-
-                {(isEditingPhone || isEditingPassword || isEditingRegion) && (
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" loading={loading}>
-                            수정하기
+                        <Button
+                            type="link"
+                            onClick={() => setIsEditingLocation(!isEditingLocation)}
+                            icon={<EditOutlined />}
+                        >
+                            수정
                         </Button>
-                    </Form.Item>
-                )}
+                    </div>
+                </Form.Item>
+                <Form.Item className="edit-u-info-c">
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        loading={loading}
+                        disabled={!(isEditingPhone || isEditingPassword || isEditingLocation)}
+                    >
+                        수정하기
+                    </Button>
+                </Form.Item>
             </Form>
         </div>
     );

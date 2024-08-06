@@ -12,7 +12,6 @@ const textToHash = async (text) => {
     }
 };
 
-//회원 가입
 exports.signup = async (req, res) => {
     const { userEmail, userPW, userName, userPhone } = req.body;
     try {
@@ -32,18 +31,13 @@ exports.signup = async (req, res) => {
 // 암호화된 비밀번호 일치
 const hashCompare = async (inputValue, hash) => {
     try {
-        console.log(inputValue, hash);
+        console.log(`Comparing: ${inputValue} with hash: ${hash}`);
         const isMatch = await bcrypt.compare(inputValue, hash);
-        if (isMatch) {
-            console.log(true);
-            return true;
-        } else {
-            console.log(false);
-            return false;
-        }
+        console.log(`Comparison result: ${isMatch}`);
+        return isMatch;
     } catch (error) {
-        console.error(error);
-        return error;
+        console.error('Error comparing hash:', error);
+        return false;
     }
 };
 
@@ -58,9 +52,9 @@ exports.loginCheck = async (req, res) => {
         }
         let isMatch = false;
         for (const user of getUser) {
-            const hashedPW = Buffer.from(user.userPW).toString();
-            const h = await bcrypt.hash(userPW, 10);
+            const h = await textToHash(userPW, 10);
             console.log(h);
+            const hashedPW = user.userPW.toString('utf8');
             if (await hashCompare(userPW, hashedPW)) {
                 isMatch = true;
                 req.session.userID = user.userID;
@@ -100,35 +94,6 @@ exports.userData = async (req, res) => {
     }
 };
 
-// //회원 정보 수정
-// exports.editUserInfo = async (req, res) => {
-//     const { userID, userPhone, userLocation, userPW } = req.body;
-//     console.log(userID, userPhone, userLocation, userPW);
-//     if (userID) {
-//         try {
-//             let hashedPW = null;
-//             if (userPW) {
-//                 hashedPW = await textToHash(userPW);
-//             }
-//             const editUserInfoResult = await userDB.editUserInfo({
-//                 userPhone,
-//                 userLocation,
-//                 hashedPW,
-//                 userID,
-//             });
-
-//             // 업데이트된 사용자 정보를 반환 (예시를 위해 getUserData 사용)
-//             const updatedUserData = await userDB.getUserData(userID);
-
-//             res.status(200).json(updatedUserData);
-//         } catch (error) {
-//             console.error('유저 정보 수정 중 오류:', error);
-//             res.status(500).json('유저 정보 수정 중 오류 발생');
-//         }
-//     } else {
-//         res.status(401).json('유저 정보 받아올 수 없음');
-//     }
-// };
 // 회원 정보 수정
 exports.editUserInfo = async (req, res) => {
     const { userID, userPhone, userLocation, userPW } = req.body;
@@ -139,18 +104,18 @@ exports.editUserInfo = async (req, res) => {
             const values = [];
 
             // 비밀번호가 제공된 경우에만 해시화 및 업데이트
-            if (userPW) {
+            if (userPW !== null) {
                 const hashedPW = await textToHash(userPW);
                 fields.push('userPW = ?');
                 values.push(hashedPW);
             }
 
-            if (userPhone !== undefined) {
+            if (userPhone !== null) {
                 fields.push('userPhone = ?');
                 values.push(userPhone);
             }
 
-            if (userLocation !== undefined) {
+            if (userLocation !== null) {
                 fields.push('userLocation = ?');
                 values.push(userLocation);
             }
@@ -164,7 +129,6 @@ exports.editUserInfo = async (req, res) => {
 
             await userDB.editUserInfo({ userID, sql, values });
 
-            // 업데이트된 사용자 정보를 반환 (예시를 위해 getUserData 사용)
             const updatedUserData = await userDB.getUserData(userID);
 
             res.status(200).json(updatedUserData);
@@ -176,3 +140,13 @@ exports.editUserInfo = async (req, res) => {
         res.status(401).json('유저 정보 받아올 수 없음');
     }
 };
+
+const testPasswordHashing = async () => {
+    const plainPassword = 'Dlawodnjs1!';
+    const hash = await textToHash(plainPassword);
+    console.log('Generated hash:', hash);
+    const isMatch = await hashCompare(plainPassword, hash);
+    console.log('Password matches:', isMatch);
+};
+
+testPasswordHashing();

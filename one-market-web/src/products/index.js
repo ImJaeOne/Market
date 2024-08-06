@@ -1,7 +1,7 @@
 import './index.css';
 import { useState, useEffect, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { Button, Form, Select, message } from 'antd';
+import { Button, Form, Select, message, Avatar } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { SessionContext } from '../Session/SessionProvider';
 import axios from 'axios';
@@ -117,19 +117,20 @@ function ProductsPageComponent(props) {
                     {products.map(function (product, index) {
                         return (
                             <Link to={`/product/${product.productID}`} className="product-card" key={product.productID}>
-                                <div>
+                                <div className="product-img-wrapper">
                                     <img
-                                        className="product-img"
                                         src={`http://localhost:3006/uploads/${product.productImgUrl}`}
                                         alt="product-img"
+                                        className={`product-img ${product.productsoldout === 1 ? 'product-blur' : ''}`}
                                     />
+                                    {product.productsoldout === 1 && <div className="product-blur"></div>}
                                 </div>
                                 <div className="product-contents">
                                     <span className="product-name">{product.productName}</span>
                                     <span className="product-price">{product.productPrice}</span>
                                     <div className="product-footer">
                                         <div className="product-seller">
-                                            <img className="product-avatar" src="images/avatar.png" alt="profile-img" />
+                                            <Avatar className="product-avatar">{product.userName.slice(1)}</Avatar>
                                             <span>{product.userName}</span>
                                         </div>
                                         <span className="product-date">

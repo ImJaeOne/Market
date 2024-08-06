@@ -1,7 +1,7 @@
 import './index.css';
 import { useEffect, useReducer, createContext, useMemo, useContext } from 'react';
 import { Link, NavLink, Route, useHistory, Redirect } from 'react-router-dom';
-import { Divider, message, Spin } from 'antd';
+import { Divider, message, Spin, Avatar } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { SessionContext } from '../Session/SessionProvider';
 import MyPageProductComponent from './product';
@@ -139,7 +139,7 @@ const MyPageComponent = () => {
                     <EditOutlined />내 정보 수정하기
                 </Link>
                 <div className="mypage-user-wrap">
-                    <img className="mypage-avatar" src="../images/avatar.png" alt="profile-img" />
+                    <Avatar className="mypage-avatar">{session.userName.slice(1)}</Avatar>
                     <div id="mypage_info">
                         <div className="mypage-name">{session.userName}님</div>
                         <div className="mypage-phone">

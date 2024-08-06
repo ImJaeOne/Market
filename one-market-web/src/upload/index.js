@@ -1,27 +1,33 @@
 import './index.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Form, Upload, Divider, Input, InputNumber, Button, message, Select,Spin } from 'antd';
+import { Form, Upload, Divider, Input, InputNumber, Button, message, Select, Spin } from 'antd';
+import { SessionContext } from '../Session/SessionProvider';
 import axios from 'axios';
 
-function UploadPageComponent(props) {
-    const{session, sessionLoading} = props
+function UploadPageComponent() {
+    const {state} = useContext(SessionContext);
+    const { session, sessionLoading } = state;
     const [imageUrl, setImageUrl] = useState(null);
     const history = useHistory();
 
     useEffect(() => {
-        if (session) {
-            return
-        } else if (!sessionLoading) {
+        if (!sessionLoading && !session) {
             history.push('/login');
-            message.error('로그인이 필요합니다');
+            message.error('로그인이 필요합니다.');
         }
-    },[session, sessionLoading, history])
+    }, [session, sessionLoading, history]);
     
 
-    if (props.sessionLoading) {
+    if (sessionLoading) {
         return <Spin tip="세션 정보를 불러오는 중입니다..." />;
     }
+
+    if (!session) {
+        // 세션이 없으면 아무것도 렌더링하지 않음
+        return null;
+    }
+
     const onSubmit = (values) => {
         console.log(values);
         message.info('상품 등록이 완료되었습니다.');
@@ -32,7 +38,7 @@ function UploadPageComponent(props) {
                 productDescription: values.productDescription,
                 productPrice: parseInt(values.productPrice),
                 productImageUrl: imageUrl,
-                userID: props.session.userID,
+                userID: session.userID,
             })
             .then((result) => {
                 console.log(result);
@@ -54,9 +60,9 @@ function UploadPageComponent(props) {
             console.log(imageUrl);
         }
     };
-    const handleChange = (value) => {
-        console.log(`selected ${value}`);
-    };
+    // const handleChange = (value) => {
+    //     console.log(`selected ${value}`);
+    // };
     const option = [
         {
             value: 'all',
@@ -136,7 +142,7 @@ function UploadPageComponent(props) {
                         style={{
                             width: 120,
                         }}
-                        onChange={handleChange}
+                        // onChange={handleChange}
                         options={option}
                     />
                 </Form.Item>
@@ -181,3 +187,4 @@ function UploadPageComponent(props) {
 }
 
 export default UploadPageComponent;
+

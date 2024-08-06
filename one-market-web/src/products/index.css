@@ -31,29 +31,41 @@
 
 .product-card {
     width: 315px;
-    height: 300px;
+    height: 330px;
     margin: 12px;
     border: 1px solid rgb(230, 230, 230);
     border-radius: 12px;
     overflow: hidden;
-    position: relative;
 }
 
-.product-blur {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ffffffaa;
-    pointer-events: none;
+.product-img-wrapper {
+    position: relative;
+    width: 100%;
+    height: 180px;
 }
 
 .product-img {
-    margin: 10px 0;
     width: 100%;
-    height: 180px;
+    height: 100%;
     object-fit: contain;
+    transition: filter 0.3s ease; /* 블러 효과를 부드럽게 적용하기 위한 transition */
+}
+
+.product-blur::after {
+    content: 'SOLD OUT'; /* 텍스트 추가 */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    pointer-events: none; /* 텍스트 클릭 비활성화 */
+    text-align: center;
+    z-index: 2; /* 텍스트가 이미지 위에 보이도록 설정 */
 }
 
 .product-contents {
@@ -63,13 +75,15 @@
 }
 
 .product-name {
-    font-size: 14px;
+    font-size: 16px;
+    margin-left: 5px;
 }
 
 .product-price {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
-    margin-top: 4px;
+    margin-left: 5px;
+    margin-top: 10px;
 }
 
 .product-seller {
@@ -78,12 +92,14 @@
 }
 
 .product-avatar {
-    width: 24px;
-}
-
-.product-link {
-    color: inherit;
-    text-decoration: none;
+    width: 40px;
+    height: 40px;
+    font-size: 15px;
+    margin-right: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 .product-footer {

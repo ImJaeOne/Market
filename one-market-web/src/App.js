@@ -11,6 +11,7 @@ import LoginPageComponent from './login';
 import SignupPageComponent from './signup';
 import MyPageComponent from './mypage';
 import UserInfoEditComponent from './edit-u-info';
+import LocationProductComponent from './locationProduct';
 import SessionProvider from './Session/SessionProvider';
 
 function App() {
@@ -27,7 +28,7 @@ function App() {
                                 <MainPageComponent />
                             </Route>
                             <Route exact={true} path="/products">
-                                <ProductsPageComponent search={search}  />
+                                <ProductsPageComponent search={search} />
                             </Route>
                             <Route exact={true} path="/product/:productID">
                                 <ProductPageComponent />
@@ -44,8 +45,11 @@ function App() {
                             <Route path="/mypage">
                                 <MyPageComponent />
                             </Route>
-                            <Route path='/update_info'>
-                                <UserInfoEditComponent/>
+                            <Route path="/update_info">
+                                <UserInfoEditComponent />
+                            </Route>
+                            <Route exact={true} path="/location">
+                                <LocationProductComponent />
                             </Route>
                         </Switch>
                     </section>

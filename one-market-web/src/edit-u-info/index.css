@@ -1,8 +1,10 @@
-#edit-u-info-wrap{
+#edit-u-info-wrap {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: 100%;
+    height: 100%;
 }
 
 #edit-u-info-headline {
@@ -12,20 +14,27 @@
     margin-bottom: 30px;
 }
 
-.edit-u-info-label{
+.edit-u-info-label {
     font-size: 25px;
 }
 
-.edit-u-info-c{
+.edit-u-info-c {
     margin-top: 10px;
     font-size: 20px;
     padding: 0 100px;
-    
 }
 
-.edit-u-info-t{
+.edit-u-info-t {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     width: 400px;
+}
+
+.edit-u-info-map {
+    margin: 10px 0 50px 0;
+    width: 400px;
+    height: 400px; /* 여기서 명시적으로 높이를 설정 */
+    display: flex;
+    flex-direction: column;
 }

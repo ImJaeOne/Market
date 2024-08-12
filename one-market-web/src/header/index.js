@@ -4,7 +4,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { Input, message, Form } from 'antd';
 import sessionAuth from '../Session/sessionAuth';
 import axios from 'axios';
-import { SessionContext } from '../Session/SessionProvider'
+import { SessionContext } from '../Session/SessionProvider';
 import { CLEAR_SESSION } from '../Session/SessionReducer';
 
 function HeaderComponent(props) {
@@ -13,27 +13,30 @@ function HeaderComponent(props) {
     const { session } = state;
     const history = useHistory();
     const { Search } = Input;
-    
-    const onSearch = useCallback((value, form) => {
-        axios
-            .post('http://localhost:3006/product/search', { productName: value })
-            .then((result) => {
-                const searchProductData = {
-                    products: result.data,
-                };
-                setSearch(searchProductData);
-                history.push('/products');
-            })
-            .catch((error) => {
-                console.log(error);
-                message.error('상품이 존재하지 않습니다.');
-            });
-    }, [history, setSearch]);
+
+    const onSearch = useCallback(
+        (value, form) => {
+            axios
+                .post('http://localhost:3006/product/search', { productName: value })
+                .then((result) => {
+                    const searchProductData = {
+                        products: result.data,
+                    };
+                    setSearch(searchProductData);
+                    history.push('/products');
+                })
+                .catch((error) => {
+                    console.log(error);
+                    message.error('상품이 존재하지 않습니다.');
+                });
+        },
+        [history, setSearch]
+    );
 
     const logout = async () => {
         try {
             await sessionAuth.handleLogout(dispatch);
-            dispatch({type: CLEAR_SESSION})
+            dispatch({ type: CLEAR_SESSION });
         } catch (error) {
             console.error('로그아웃 에러 : ', error);
         }
@@ -44,7 +47,7 @@ function HeaderComponent(props) {
     };
 
     const prepare = () => {
-        message.info('준비 중인 서비스입니다.');
+        history.push('/location');
     };
 
     return (
@@ -80,10 +83,7 @@ function HeaderComponent(props) {
                                 <div className="to-login" onClick={mypage}>
                                     {session.userName}님
                                 </div>
-                                <div
-                                    className="to-login"
-                                    onClick={logout}
-                                >
+                                <div className="to-login" onClick={logout}>
                                     로그아웃
                                 </div>
                             </div>

@@ -31,11 +31,12 @@
 
 .product-card {
     width: 315px;
-    height: 330px;
+    height: 340px;
     margin: 12px;
     border: 1px solid rgb(230, 230, 230);
     border-radius: 12px;
     overflow: hidden;
+    padding-top: 10px;
 }
 
 .product-img-wrapper {
@@ -82,6 +83,12 @@
 .product-price {
     font-size: 18px;
     font-weight: 600;
+    margin-left: 5px;
+    margin-top: 10px;
+}
+.product-location {
+    font-size: 13px;
+    font-weight: 100;
     margin-left: 5px;
     margin-top: 10px;
 }

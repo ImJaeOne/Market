@@ -1,4 +1,4 @@
-import { Divider,Avatar } from 'antd';
+import { Divider, Avatar } from 'antd';
 import '../mypagecategory.css';
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
@@ -18,32 +18,43 @@ const MyPageProductComponent = () => {
                 <div id="product-list">
                     {myProducts.length > 0 ? (
                         myProducts.map(function (product, index) {
-                        return (
-                            <Link to={`/product/${product.productID}`} className="product-card" key={product.productID}>
-                                <div className="product-img-wrapper">
-                                    <img
-                                        src={`http://localhost:3006/uploads/${product.productImgUrl}`}
-                                        alt="product-img"
-                                        className={`product-img ${product.productsoldout === 1 ? 'product-blur' : ''}`}
-                                    />
-                                    {product.productsoldout === 1 && <div className="product-blur"></div>}
-                                </div>
-                                <div className="product-contents">
-                                    <span className="product-name">{product.productName}</span>
-                                    <span className="product-price">{product.productPrice}</span>
-                                    <div className="product-footer">
-                                        <div className="product-seller">
-                                            <Avatar className="product-avatar">{product.userName.slice(1)}</Avatar>
-                                            <span>{product.userName}</span>
-                                        </div>
-                                        <span className="product-date">
-                                            {dayjs(product.productUploadDate).format('YYYY-MM-DD')}
-                                        </span>
+                            return (
+                                <Link
+                                    to={`/product/${product.productID}`}
+                                    className="product-card"
+                                    key={product.productID}
+                                >
+                                    <div className="product-img-wrapper">
+                                        <img
+                                            src={`http://localhost:3006/uploads/${product.productImgUrl}`}
+                                            alt="product-img"
+                                            className={`product-img ${
+                                                product.productsoldout === 1 ? 'product-blur' : ''
+                                            }`}
+                                        />
+                                        {product.productsoldout === 1 && <div className="product-blur"></div>}
                                     </div>
-                                </div>
-                            </Link>
-                        );
-                    })
+                                    <div className="product-contents">
+                                        <span className="product-name">{product.productName}</span>
+                                        <span className="product-price">{product.productPrice}</span>
+                                        <span className="product-location">
+                                            {product.userLocation
+                                                ? product.userLocation.split(' ').slice(0, 2).join(' ')
+                                                : '지역 비공개'}
+                                        </span>
+                                        <div className="product-footer">
+                                            <div className="product-seller">
+                                                <Avatar className="product-avatar">{product.userName.slice(1)}</Avatar>
+                                                <span>{product.userName}</span>
+                                            </div>
+                                            <span className="product-date">
+                                                {dayjs(product.productUploadDate).format('YYYY-MM-DD')}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </Link>
+                            );
+                        })
                     ) : (
                         <div className="no-product-message">등록된 상품이 없습니다.</div>
                     )}

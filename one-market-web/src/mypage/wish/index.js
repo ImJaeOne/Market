@@ -37,6 +37,11 @@ const MyPageWishComponent = () => {
                                     <div className="product-contents">
                                         <span className="product-name">{product.productName}</span>
                                         <span className="product-price">{product.productPrice}</span>
+                                        <span className="product-location">
+                                            {product.userLocation
+                                                ? product.userLocation.split(' ').slice(0, 2).join(' ')
+                                                : '지역 비공개'}
+                                        </span>
                                         <div className="product-footer">
                                             <div className="product-seller">
                                                 <Avatar className="product-avatar">{product.userName.slice(1)}</Avatar>

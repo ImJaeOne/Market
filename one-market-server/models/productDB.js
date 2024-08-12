@@ -37,7 +37,7 @@ exports.getProducts = (category) => {
 exports.getProductDetail = (productID) => {
     return new Promise((resolve, reject) => {
         db.query(
-            `SELECT product.*, user.userName FROM product JOIN user ON product.userID = user.userID WHERE product.productID = ?`,
+            `SELECT product.*, user.userName, user.userLocation FROM product JOIN user ON product.userID = user.userID WHERE product.productID = ?`,
             productID,
             (error, result) => {
                 if (error) {
@@ -50,11 +50,22 @@ exports.getProductDetail = (productID) => {
     });
 };
 
-exports.searchProduct = (productName) => {
+exports.searchProduct = (search) => {
     return new Promise((resolve, reject) => {
+        let params = [`%${search}%`];
         db.query(
-            `SELECT product.*, user.userName, user.userEmail FROM product INNER JOIN user ON product.userID = user.userID WHERE product.productName LIKE ?`,
-            [`%${productName}%`],
+            `
+        SELECT product.*, user.userName, user.userLocation 
+        FROM product 
+        INNER JOIN user ON product.userID = user.userID 
+        WHERE user.userLocation LIKE ?
+        UNION
+        SELECT product.*, user.userName, user.userLocation 
+        FROM product 
+        INNER JOIN user ON product.userID = user.userID 
+        WHERE product.productName LIKE ?
+    `,
+            [...params, ...params],
             (error, result) => {
                 if (error) {
                     reject(error);
@@ -69,7 +80,7 @@ exports.searchProduct = (productName) => {
 exports.searchMyProduct = (userID) => {
     return new Promise((resolve, reject) => {
         db.query(
-            `SELECT product.*, user.userName FROM product INNER JOIN user ON product.userID = user.userID WHERE product.userID = ?`,
+            `SELECT product.*, user.userName, user.userLocation FROM product INNER JOIN user ON product.userID = user.userID WHERE product.userID = ?`,
             userID,
             (error, result) => {
                 if (error) {
@@ -85,7 +96,7 @@ exports.searchMyProduct = (userID) => {
 exports.searchMyWish = (userID) => {
     return new Promise((resolve, reject) => {
         db.query(
-            `SELECT product.*, userName FROM product INNER JOIN user ON product.userID = user.userID WHERE product.productID IN (SELECT wishproduct.productID FROM wishproduct WHERE wishproduct.userID = ? )`,
+            `SELECT product.*, userName, userLocation FROM product INNER JOIN user ON product.userID = user.userID WHERE product.productID IN (SELECT wishproduct.productID FROM wishproduct WHERE wishproduct.userID = ? )`,
             userID,
             (error, result) => {
                 if (error) {

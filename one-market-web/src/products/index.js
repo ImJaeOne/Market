@@ -7,13 +7,12 @@ import { SessionContext } from '../Session/SessionProvider';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
-function ProductsPageComponent(props) {
-    const { search } = props;
+function ProductsPageComponent({ search }) {
     const { state } = useContext(SessionContext);
     const { session } = state;
     const history = useHistory();
     const [products, getProducts] = useState([]);
-
+    console.log(products);
     useEffect(
         function () {
             if (search) {
@@ -30,7 +29,7 @@ function ProductsPageComponent(props) {
                     });
             }
         },
-        [ search ]
+        [search]
     );
     const toUploadPage = () => {
         if (session === null) {
@@ -128,6 +127,9 @@ function ProductsPageComponent(props) {
                                 <div className="product-contents">
                                     <span className="product-name">{product.productName}</span>
                                     <span className="product-price">{product.productPrice}</span>
+                                    <span className="product-location">
+                                        {product.userLocation?product.userLocation.split(' ').slice(0, 2).join(' '):'지역 비공개'}
+                                    </span>
                                     <div className="product-footer">
                                         <div className="product-seller">
                                             <Avatar className="product-avatar">{product.userName.slice(1)}</Avatar>

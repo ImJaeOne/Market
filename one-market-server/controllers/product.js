@@ -44,6 +44,7 @@ exports.getProductDetail = async (req, res) => {
 
 exports.searchProduct = async (req, res) => {
     const { productName } = req.body;
+    console.log(productName);
     await productDB
         .searchProduct(productName)
         .then((result) => {

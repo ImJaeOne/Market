@@ -39,23 +39,29 @@
 #name {
     display: flex;
     justify-content: space-between;
+    font-size: 40px;
+    font-weight: 600;
+}
+
+#price {
     font-size: 30px;
     font-weight: 400;
 }
 
-#price {
-    font-size: 20px;
-    font-weight: 600;
-}
-
 #description {
     margin-top: 16px;
-    font-size: 16px;
+    font-size: 20px;
 }
 
 #createdAt {
-    font-size: 12px;
+    font-size: 20px;
+    color: rgb(116, 116, 116);
+}
+
+#location{
+    font-size: 20px;
     color: rgb(204, 204, 204);
+
 }
 
 #purchase-button {

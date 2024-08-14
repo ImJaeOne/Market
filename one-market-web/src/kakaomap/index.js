@@ -150,7 +150,7 @@ const KakaomapComponent = ({
             <input
                 id="search-box"
                 type="text"
-                placeholder="지역 검색"
+                placeholder="지역을 검색해주세요."
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
                 style={{ width: '100%' }}

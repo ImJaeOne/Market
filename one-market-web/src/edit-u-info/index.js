@@ -4,7 +4,7 @@ import { EditOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { SessionContext } from '../Session/SessionProvider';
-import KakaomapComponent from '../kakaomap';
+import KakaomapForUserInfo from '../kakaomap/kakaomapForUser';
 import './index.css';
 
 const UpdateUserInfoComponent = () => {
@@ -13,7 +13,6 @@ const UpdateUserInfoComponent = () => {
     const { session, sessionLoading } = state;
     const [loading, setLoading] = useState(false);
     const [locationKakao, setLocationKakao] = useState(null);
-
     const [isEditingPhone, setIsEditingPhone] = useState(false);
     const [isEditingPassword, setIsEditingPassword] = useState(false);
     const [isEditingLocation, setIsEditingLocation] = useState(false);
@@ -25,7 +24,11 @@ const UpdateUserInfoComponent = () => {
         }
     }, [session, sessionLoading, history]);
 
-    const onFinish = async (values) => {
+    const handleSubmit = async () => {
+        const form = document.querySelector('form');
+        const formData = new FormData(form);
+        const values = Object.fromEntries(formData.entries());
+
         setLoading(true);
         try {
             const response = await axios.post('http://localhost:3006/api/editUserInfo', {
@@ -58,26 +61,24 @@ const UpdateUserInfoComponent = () => {
         }
     };
 
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+        }
+    };
+
     if (sessionLoading) {
         return <Spin tip="세션 정보를 불러오는 중입니다..." />;
     }
 
     if (!session) {
-        // 세션이 없으면 아무것도 렌더링하지 않음
         return null;
     }
 
     return (
         <div id="edit-u-info-wrap">
             <h1 id="edit-u-info-headline">회원정보 수정</h1>
-            <Form
-                layout="vertical"
-                onFinish={onFinish}
-                initialValues={{
-                    userPhone: session.userPhone,
-                    userLocation: session.userLocation,
-                }}
-            >
+            <Form layout="vertical" onKeyDown={handleKeyPress}>
                 <Form.Item label={<div className="edit-u-info-label">전화번호</div>} className="edit-u-info-c">
                     <div className="edit-u-info-t">
                         {isEditingPhone ? <Input name="userPhone" /> : <span>{session.userPhone}</span>}
@@ -101,11 +102,11 @@ const UpdateUserInfoComponent = () => {
                 </Form.Item>
 
                 <Form.Item label={<div className="edit-u-info-label">지역</div>} className="edit-u-info-c">
+                    <div>{locationKakao ? locationKakao : session.userLocation}</div>
                     <div className="edit-u-info-map">
-                        <KakaomapComponent
-                            name="userLocation"
-                            disabled={!isEditingLocation}
+                        <KakaomapForUserInfo
                             setLocationKakao={setLocationKakao}
+                            locationKakao={locationKakao}
                             setIsEditingLocation={setIsEditingLocation}
                         />
                     </div>
@@ -113,7 +114,7 @@ const UpdateUserInfoComponent = () => {
                 <Form.Item className="edit-u-info-c">
                     <Button
                         type="primary"
-                        htmlType="submit"
+                        onClick={handleSubmit}
                         loading={loading}
                         disabled={!(isEditingPhone || isEditingPassword || isEditingLocation)}
                     >

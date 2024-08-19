@@ -1,11 +1,10 @@
-import KakaomapComponent from '../kakaomap';
+import KakaomapForProductLocation from '../kakaomap/kakaomapForProduct';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './index.css';
 
 const LocationProductComponent = () => {
     const [productLocation, setProductLocation] = useState([]);
-    const [isEditingLocation, setIsEditingLocation] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
     const searchLocation = async (location) => {
@@ -35,6 +34,9 @@ const LocationProductComponent = () => {
                                                 latitude: parseFloat(latitude),
                                                 longitude: parseFloat(longitude),
                                                 address_name: item.userLocation,
+                                                name: item.productName,
+                                                price: item.productPrice,
+                                                id: item.productID
                                             });
                                         } else {
                                             resolve(null);
@@ -64,9 +66,8 @@ const LocationProductComponent = () => {
         <div id="products-location">
             <h1 id="products-location-headline">거래지역</h1>
             <div className="products-location-map">
-                <KakaomapComponent
+                <KakaomapForProductLocation
                     setLocationKakao={setProductLocation}
-                    setIsEditingLocation={setIsEditingLocation}
                     productLocation={productLocation}
                     setSearchQuery={setSearchQuery}
                     searchQuery={searchQuery}

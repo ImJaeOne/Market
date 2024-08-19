@@ -1,7 +1,15 @@
+#products-location-headline {
+    margin-top: 30px;
+    font-size: 32px;
+    font-weight: bolder;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
 .products-location-map {
     margin: 10px 0 50px 0;
     width: 1000px;
-    height: 500px; /* 여기서 명시적으로 높이를 설정 */
+    height: 500px;
     display: flex;
     flex-direction: column;
 }
